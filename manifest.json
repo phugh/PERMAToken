@@ -1,0 +1,24 @@
+{
+  "name": "PERMA Text Tokeniser",
+  "short_name": "PTT",
+  "start_url": "index.html",
+  "display": "standalone",
+  "default_locale": "en",
+  "manifest_version": 2,
+  "version": "1.4.0",
+  "theme_color": "#33C3F0",
+  "orientation" : "portrait",
+  "offline_enabled": false,
+  "background_color": "#fff",
+  "description": "Analyse text against the PERMAv3 Lexicon",
+  "icons": [{
+    "src": "favicon.ico",
+    "sizes": "16x16",
+    "type": "image/ico"
+  },
+  {
+    "src": "192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}

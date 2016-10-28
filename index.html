@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <title>PERMA Text Tokenizer - v1.5</title>
+        <meta name="description" content="Tokenize and match text to the PERMAv3 Lexicon."/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="manifest" href="manifest.json">
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'/>
+        <link rel='stylesheet' href='css/style.css'/>
+    </head>
+    <body>
+        <main class="container">
+            <h1>PERMA Text Tokenizer - v1.5</h1>
+            <div id="topDiv">
+                <p>This will take all of the text from the input box below and match it against the PERMAv3 Lexicon, it can also output it as a tokenized CSV file.</p>
+                <p>The tokenizer may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenizing.</p>
+                <label for="textInput">Input:</label>
+                <textarea class="u-full-width u-max-full-width" placeholder="Dear diary…" id="textInput"></textarea>
+                <div class="row">
+                    <div class="three columns">
+                        <label for="shortPERMACheck">Use tsp75 Lexicon</label>
+                        <input id="shortPERMACheck" type="checkbox">
+                    </div>
+                    <div class="three columns">
+                        <label for="generateCSVCheck">Generate CSV of tokens</label>
+                        <input id="generateCSVCheck" type="checkbox">
+                    </div>
+                    <div id="alphaCSV" class="three columns hidden">
+                        <label for="alphabetiseCheck">Sort tokens alphabetically</label>
+                        <input id="alphabetiseCheck" type="checkbox">
+                    </div>
+                </div>
+                <div class="row" id="buttonRow">
+                    <button id="startButton" class="button-primary" type="button">Go!</button>
+                    <button id="btnPrint" class="button-default hidden" type="button">Print Results</button>
+                </div>
+                <hr>
+            </div>
+            <div id="content"></div>
+            <footer>
+                <p>The PERMA Text Tokenizer, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Tokenizer is released under the same licence. Uses <a href="https://github.com/dhg/Skeleton" target="_blank">Skeleton CSS</a> and <a href="https://jquery.org" target="_blank">jQuery</a>.</p>
+            </footer>
+        </main>
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

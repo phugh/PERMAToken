@@ -1,0 +1,57 @@
+changelog
+
+** v1.5 ** 28/10/2016
+- Code cleanup
+
+** v1.4 ** 07/10/2016
+- added application manifest
+- javascript bug fixes and optimisations
+- removed inline scripts and styles
+- updated jQuery to 3.1.1.slim
+- improved print layout
+- improved touch latency for mobile browsers
+- began removal of jQuery code
+
+** v1.3 ** 05/07/2016
+- added percentages for PERMA totals (TODO: add percentages for individual categories)
+
+** v1.2 ** 23/06/2016
+- reseperate index.html and main.js
+- prep for move to JSON
+
+** v1.1 ** 12/06/2016
+- Updated jQuery to 3.0.0.slim
+
+** v1.0 ** 26/05/2016
+- Merged changelog, main.js, and index.html for ease of use for the less computer literate
+- Added Skeleton CSS and jQuery links to index.html
+- Added PERMAv3 Lexicon licence info to main.js
+- Added Print button
+- Show href of links on print
+
+** v0.5 **
+- Added "Use tsp75 Lexicon" feature
+- Improved code readability
+- Code improvements and bug fixes
+
+** v0.4 **
+- Improved ratio calculation takes into account where one number may be 0
+- Change CSV encoding to UTF-16LE
+- More code commenting
+- Added favicon.ico
+
+** v0.3 **
+- Much improved regex (was: /[a-zA-Z]\w+/g, now: /\b\S+\b/g) allows capture of words with punctuation as a complete word
+- Improved CSV encoding using Windows-1252 charset (was utf-8), should fix some versions of excel producing garbled results
+- Began commenting code
+- Code improvements and bug fixes
+
+** v0.2 **
+- Added "Calculate +/- ratio" feature
+- Improved printing style
+- Made CSV features into selectable options (selecting all options will increase processing time)
+- Put CC licence info at the bottom
+- Code improvements and bug fixes
+
+** v0.1 **
+- initial release
