@@ -1,5 +1,8 @@
 changelog
 
+** v1.6 ** 06/04/17
+- Code cleanup part 2: Electric Boogaloo
+
 ** v1.5 ** 28/10/2016
 - Code cleanup
 

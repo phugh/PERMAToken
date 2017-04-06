@@ -1,8 +1,19 @@
+/* jshint globalstrict: true, browser: true, devel: true, sub: true, esversion: 5, asi: true, -W041 */ /* global $ */
+'use strict'; // eslint-disable-line
 var out = {
-  posP: [], negP: [], posE: [], negE: [], posR: [], negR: [], posM: [], negM: [], posA: [], negA: []
+  posP: [],
+  negP: [],
+  posE: [],
+  negE: [],
+  posR: [],
+  negR: [],
+  posM: [],
+  negM: [],
+  posA: [],
+  negA: []
 }
 
-// 'endsWith function'
+// 'endsWith function' fallback
 if (typeof String.prototype.endsWith !== 'function') {
   String.prototype.endsWith = function (str) {
     return this.slice(-str.length) === str
@@ -10,10 +21,9 @@ if (typeof String.prototype.endsWith !== 'function') {
 }
 
 function eliminateDuplicates (arr, block) {
-  var i
   var len = arr.length
   var obj = {}
-  for (i = 0; i < len; i++) {
+  for (var i = 0; i < len; i++) {
     if (!obj[arr[i]]) {
       obj[arr[i]] = {}
       out[block].push(' ' + arr[i])
@@ -23,17 +33,15 @@ function eliminateDuplicates (arr, block) {
 }
 
 function analyseText () {
-  var contentDiv = document.getElementById('content')
-
   // clear previous print and csv buttons if it exists
   var btnCSV = document.getElementById('btnCSV')
   if (btnCSV) {
     btnCSV.parentElement.removeChild(btnCSV)
   }
-
   document.getElementById('btnPrint').classList.add('hidden')
 
   // GET TEXT
+  var contentDiv = document.getElementById('content')
   var textInput = $('#textInput').val().trim().toLowerCase()
   if (textInput.length === 0) {
     contentDiv.innerHTML = '<p>Input box is empty!</p><hr>'
@@ -41,7 +49,6 @@ function analyseText () {
     contentDiv.innerHTML = ''
     var reg = new RegExp(/\b\S+\b/g)
     var result = null
-
     var inputArray = [reg.exec(textInput)]
     while ((result = reg.exec(textInput)) !== null) {
       inputArray.push(result)
@@ -68,8 +75,8 @@ function analyseText () {
     var nmCount = 0
     var mCount = 0
 
-        // PERMALex is the PERMAv3 Lexicon and PERMAv3_tsp75 Lexicon from the World Wellbeing Project - www.wwbp.org
-        // released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+    // PERMALex is the PERMAv3 Lexicon and PERMAv3_tsp75 Lexicon from the World Wellbeing Project - www.wwbp.org
+    // released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
     var PERMALex = null
     var shortPERMACheck = document.getElementById('shortPERMACheck')
     if (shortPERMACheck.checked === true) {
@@ -99,11 +106,21 @@ function analyseText () {
         negA: ['subpar', 'beaten', 'unproductive', 'flawed', 'inadequate', 'overlooked', 'obsolete', 'defeated', 'unsatisfactory', 'inhibited', 'luckless', 'lowly', 'unsuccessful', 'banal', 'mediocre', 'destitute', 'helpless', 'profitless', 'defective', 'discardable', 'idiot', 'ineptness', 'defamed', 'insignificant', 'inadequacy', 'imperfection', 'underwhelmed', 'overwhelmed', 'forgettable', 'failed', 'broken down', 'unable', 'stagnant', 'dishonored', 'demoted', 'undistinguished', 'blundering', 'incompetence', 'inferior', 'artless', 'fruitless', 'unremarkable', 'stagnation', 'imperfect', 'ineffective', 'ineptitude', 'unprofessional', 'inept', 'callow', 'crushed', 'bungling', 'undeserving', 'middling', 'unaccomplished', 'anonymous', 'incompetent', 'amateurish', 'unacceptable', 'ordinary', 'mundane', 'low-quality', 'inferiority', 'dislodged', 'unexceptional', 'unskilled', 'deficient', 'fruitlessness', 'run-of-the-mill', 'lackluster', 'ineffectual', 'disposable', 'common', 'incapable', 'mediocrity', 'substandard', 'incapability', 'incomplete', 'destitution']
       }
     }
+
     var PERMALexResults = {
-      posP: [], negP: [], posE: [], negE: [], posR: [], negR: [], posM: [], negM: [], posA: [], negA: []
+      posP: [],
+      negP: [],
+      posE: [],
+      negE: [],
+      posR: [],
+      negR: [],
+      posM: [],
+      negM: [],
+      posA: [],
+      negA: []
     }
 
-        // compare the text inputArray against the lexicon ("PERMALex"), dump the results into "PERMALexResults"
+    // compare the text inputArray against the lexicon ("PERMALex"), dump the results into "PERMALexResults"
     $.each(PERMALex, function (a, b) {
       for (var i = 0; i < inputArray.length; i++) {
         var inputWord = inputArray[i]
@@ -165,6 +182,7 @@ function analyseText () {
 }
 
 document.addEventListener('DOMContentLoaded', function loaded () {
+  // CSV Alphabetizer button toggler
   document.getElementById('generateCSVCheck').addEventListener('click', function (e) {
     var alphaCSV = document.getElementById('alphaCSV')
     if (alphaCSV.classList.contains('hidden')) {
@@ -174,13 +192,8 @@ document.addEventListener('DOMContentLoaded', function loaded () {
     }
   }, false)
 
-  document.getElementById('startButton').addEventListener('click', function (e) {
-    analyseText()
-  }, false)
-
-  document.getElementById('btnPrint').addEventListener('click', function () {
-    window.print()
-  }, {passive: true})
-
+  // event listeners
+  document.getElementById('startButton').addEventListener('click', analyseText, false)
+  document.getElementById('btnPrint').addEventListener('click', window.print, {passive: true})
   document.removeEventListener('DOMContentLoaded', loaded)
 })
