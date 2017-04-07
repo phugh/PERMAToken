@@ -1,6 +1,7 @@
-/* jshint globalstrict: true, browser: true, devel: true, sub: true, esversion: 5, asi: true, -W041 */ /* global $ */
+/* jshint globalstrict: true, browser: true, devel: true, sub: true, esversion: 5, asi: true, -W041 */ /* global $, alert */
 'use strict'; // eslint-disable-line
-var out = {
+
+var finalArray = {
   posP: [],
   negP: [],
   posE: [],
@@ -13,23 +14,34 @@ var out = {
   negA: []
 }
 
-// 'endsWith function' fallback
+var repeats = {}
+
+// 'endsWith' fallback
 if (typeof String.prototype.endsWith !== 'function') {
-  String.prototype.endsWith = function (str) {
+  String.prototype.endsWith = function (str) { // eslint-disable-line
     return this.slice(-str.length) === str
   }
 }
 
-function eliminateDuplicates (arr, block) {
+function handleDuplicates (arr, block) {
   var len = arr.length
   var obj = {}
+  var item = null
   for (var i = 0; i < len; i++) {
     if (!obj[arr[i]]) {
-      obj[arr[i]] = {}
-      out[block].push(' ' + arr[i])
+      obj[arr[i]] = 1
+      item = arr[i]
+    } else {
+      if (!repeats[arr[i]]) {
+        repeats[arr[i]] = 2
+        item = (arr[i] + '[2]')
+      } else {
+        repeats[arr[i]]++
+        item = (arr[i] + '[' + repeats[arr[i]] + ']')
+      }
     }
   }
-  return out
+  if (item != null) finalArray[block].push(' ' + item)
 }
 
 function analyseText () {
@@ -44,14 +56,13 @@ function analyseText () {
   var contentDiv = document.getElementById('content')
   var textInput = $('#textInput').val().trim().toLowerCase()
   if (textInput.length === 0) {
-    contentDiv.innerHTML = '<p>Input box is empty!</p><hr>'
+    alert('Input box is empty!')
   } else {
-    contentDiv.innerHTML = ''
-    var reg = new RegExp(/\b\S+\b/g)
+    var regex = new RegExp(/\b\S+\b/g)
     var result = null
-    var inputArray = [reg.exec(textInput)]
-    while ((result = reg.exec(textInput)) !== null) {
-      inputArray.push(result)
+    var inputArray = []
+    while ((result = regex.exec(textInput))) {
+      inputArray.push(result[0])
     }
 
     // generate CSV of tokens and alphabetise if the user has selected this feature
@@ -62,12 +73,12 @@ function analyseText () {
         inputArray.sort()
       }
       var lineArray = []
-      inputArray.forEach(function (infoArray, index) {
-        var line = infoArray.join(',')
-        lineArray.push(index === 0 ? 'data:text/csv;charset=UTF-16LE,' + line : line)
+      inputArray.forEach(function (word, index) {
+        word = word.replace(/'/g, '^')
+        lineArray.push(word)
       })
       var csvContent = lineArray.join('\n')
-      var encodedUri = encodeURI(csvContent)
+      var encodedUri = encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
       $('#buttonRow').append("<a class='button' id='csvButton' href='" + encodedUri + "' download='perma_tokens_" + $.now() + ".csv'>Save CSV</a>")
     }
 
@@ -162,21 +173,36 @@ function analyseText () {
       ratioStatement = '<p>There are an equal number of positive and negative PERMA words.</p>'
     }
 
-    // remove duplicates from "PERMALexResuts" and dump them to "out" so we can display them neatly
-    $.each(PERMALexResults, function (c, d) {
-      eliminateDuplicates(PERMALexResults[c], c)
+    // remove duplicates from "PERMALexResuts" and dump them to "finalArray" so we can display them neatly
+    $.each(PERMALexResults, function (a, b) {
+      handleDuplicates(PERMALexResults[a], a)
     })
 
     // display results
-    var resultList = '<h2>Results</h2><p>Wordcount: ' + wordCount + '.</p><p>' + (mCount + nmCount) + ' combinations tested, resulting in ' + mCount + ' PERMA word matches (' + (((mCount / wordCount) * 100).toFixed(2)) + '% of total word count).</p>' + numberStatement + ratioStatement + '<hr><h3>Breakdown (duplicates removed)</h3><p><b>P+</b>: ' + out.posP.toString() + '</p><p><b>P-</b>: ' + out.negP.toString() + '</p><hr><p><b>E+</b>: ' + out.posE.toString() + '</p><p><b>E-</b>: ' + out.negE.toString() + '</p><hr><p><b>R+</b>: ' + out.posR.toString() + '</p><p><b>R-</b>: ' + out.negR.toString() + '</p><hr><p><b>M+</b>: ' + out.posM.toString() + '</p><p><b>M-</b>: ' + out.negM.toString() + '</p><hr><p><b>A+</b>: ' + out.posA.toString() + '</p><p><b>A-</b>: ' + out.negA.toString() + '</p><hr>'
-    contentDiv.innerHTML = resultList
+    $('#wordcount').html(wordCount)
+    $('#combinations').html((mCount + nmCount))
+    $('#matches').html(mCount)
+    $('#percent').html(((mCount / wordCount) * 100).toFixed(2))
+    $('#numbers').html(numberStatement)
+    $('#ratio').html(ratioStatement)
+    $('#posP').html(finalArray.posP.toString())
+    $('#negP').html(finalArray.negP.toString())
+    $('#posE').html(finalArray.posE.toString())
+    $('#negE').html(finalArray.negE.toString())
+    $('#posR').html(finalArray.posR.toString())
+    $('#negR').html(finalArray.negR.toString())
+    $('#posM').html(finalArray.posM.toString())
+    $('#negM').html(finalArray.negM.toString())
+    $('#posA').html(finalArray.posA.toString())
+    $('#negA').html(finalArray.negA.toString())
+    contentDiv.classList.remove('hidden')
 
     // append print button
     document.getElementById('btnPrint').classList.remove('hidden')
 
     // cleanup after everything is displayed
-    $.each(out, function (key, value) {
-      out[key].length = 0
+    $.each(finalArray, function (key, value) {
+      finalArray[key].length = 0
     })
   }
 }
@@ -194,6 +220,6 @@ document.addEventListener('DOMContentLoaded', function loaded () {
 
   // event listeners
   document.getElementById('startButton').addEventListener('click', analyseText, false)
-  document.getElementById('btnPrint').addEventListener('click', window.print, {passive: true})
+  document.getElementById('btnPrint').addEventListener('click', window.print.bind(window), {passive: true})
   document.removeEventListener('DOMContentLoaded', loaded)
-})
+}); // eslint-disable-line

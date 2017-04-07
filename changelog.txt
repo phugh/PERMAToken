@@ -1,5 +1,11 @@
 changelog
 
+** v1.6.1 ** 07/04/17
+- Fix breaks caused by jQuery 3.2.0+
+- Improve regex/array efficiency
+- Add repeat word counting
+- Fix CSV generation
+
 ** v1.6 ** 06/04/17
 - Code cleanup part 2: Electric Boogaloo
 
