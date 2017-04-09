@@ -1,51 +1,85 @@
 <!doctype html>
 <html lang="en-GB">
     <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
-        <title>PERMA Text Tokenizer - v1.6.1</title>
-        <meta name="description" content="Tokenize and match text to the PERMAv3 Lexicon."/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>PERMA Text Analyser - v2.0.0</title>
+        <meta name="description" content="Tokenize and match text to the PERMAv3 Lexicon.">
+        <meta name="author" content="Peter Hughes - www.phugh.es">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="http://www.phugh.es/tech/permatoken">
+
+        <meta name="theme-color" content="#455A64">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="New Routes">
         <link rel="manifest" href="manifest.json">
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'/>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
         <link rel='stylesheet' href='css/style.css'/>
     </head>
     <body>
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <span class="navbar-brand">PERMA Text Analyser</span>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://www.phugh.es" target="_blank">by P. Hughes</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
         <main class="container">
-            <h1>PERMA Text Tokenizer - v1.6.1</h1>
-            <div id="topDiv">
+            <!-- Input Section -->
+            <section id="inputSection">
+                <strong>Welcome</strong>
                 <p>This will take all of the text from the input box below and match it against the PERMAv3 Lexicon, it can also output it as a tokenized CSV file.</p>
                 <p>The tokenizer may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenizing.</p>
-                <label for="textInput">Input:</label>
-                <textarea class="u-full-width u-max-full-width" placeholder="Dear diary…" id="textInput"></textarea>
-                <div class="row">
-                    <div class="three columns">
-                        <label for="shortPERMACheck">Use tsp75 Lexicon</label>
-                        <input id="shortPERMACheck" type="checkbox">
-                    </div>
-                    <div class="three columns">
-                        <label for="generateCSVCheck">Generate CSV of tokens</label>
-                        <input id="generateCSVCheck" type="checkbox">
-                    </div>
-                    <div id="alphaCSV" class="four columns hidden">
-                        <label for="alphabetiseCheck">Sort tokens alphabetically</label>
-                        <input id="alphabetiseCheck" type="checkbox">
-                    </div>
+                <div class="form-group">
+                    <label for="textInput">Input:</label>
+                    <textarea class="form-control" placeholder="Dear diary…" id="textInput"></textarea>
                 </div>
-                <div class="row" id="buttonRow">
-                    <button id="startButton" class="button-primary" type="button">Go!</button>
-                    <button id="btnPrint" class="button-default hidden" type="button">Print Results</button>
+                    <label class="checkbox-inline" data-toggle="tooltip" data-placement="bottom" title="The tsp75 lexicon contains fewer words. It will result in fewer, but more accurate, matches.">
+                        <input type="checkbox" id="shortPERMACheck"> Use "tsp75" Lexicon
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="generateCSVCheck"> Generate CSV of tokens
+                    </label>
+                    <label id="alphaCSV" class="checkbox-inline disabled">
+                        <input type="checkbox" id="alphabetiseCheck" disabled> Sort tokens alphabetically
+                    </label>
+                <p>&nbsp;</p>
+                <div id="buttonRow">
+                    <button id="startButton" class="btn btn-primary" type="button">Go!</button>
                 </div>
-                <hr>
-            </div>
-            <div id="content" class="hidden">
+                <hr/>
+            </section>
+
+            <!-- Output Section -->
+            <section id="content" class="hidden">
                 <h2>Results</h2>
-                <p>Duplicate appearance count appears in brackets next to words.<p>
-                <p><strong>Wordcount: </strong><span id="wordcount"></span></p>
-                <p><span id="combinations"></span> combinations tested, resulting in <span id="matches"></span> PERMA word matches (<span id="percent"></span>% of word count).</p>
-                <p id="numbers"></p>
-                <p id="ratio"></p>
+                <p><strong>Word Combinations Tested: </strong><span id="combinations"></span> combinations.</p>
+                <p><strong>Wordcount: </strong><span id="wordcount"></span> words.</p>
+                <p><strong>Total PERMA Words Matched: </strong><span id="matches"></span> words. <span id="percent"></span>% of word count.</p>
+                <p><strong>Positive PERMA Words Matched: </strong><span id="pmatches"></span> words. <span id="ppercent"></span>% of word count.</p>
+                <p><strong>Negative PERMA Words Matched: </strong><span id="nmatches"></span> words. <span id="npercent"></span>% of word count.</p>
+                <p><strong>Ratio: </strong><span id="ratio"></span></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="donut" width="400" height="400"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="spider" width="400" height="400"></canvas>
+                    </div>
+                </div>
                 <hr>
+                <h3>Breakdown</h3>
+                <p>Duplicate appearance count appears in brackets next to words.<p>
+                <p>&nbsp;</p>
                 <p><strong>P+:</strong><span id="posP"></span></p>
                 <p><strong>P-:</strong><span id="negP"></span></p>
                 <hr>
@@ -61,12 +95,16 @@
                 <p><strong>A+:</strong><span id="posA"></span></p>
                 <p><strong>A-:</strong><span id="negA"></span></p>
                 <hr>
-            </div>
-            <footer>
-                <p>The PERMA Text Tokenizer, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Tokenizer is released under the same licence. Uses <a href="https://github.com/dhg/Skeleton" target="_blank">Skeleton CSS</a> and <a href="https://jquery.org" target="_blank">jQuery</a>.</p>
-            </footer>
+            </section>
         </main>
+
+        <footer class="container">
+            <p>The PERMA Text Tokenizer, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Tokenizer is released under the same licence. Uses <a href="https://github.com/dhg/Skeleton" target="_blank">Skeleton CSS</a> and <a href="https://jquery.org" target="_blank">jQuery</a>.</p>
+        </footer>
+
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>

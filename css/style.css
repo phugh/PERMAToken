@@ -1,3 +1,6 @@
+@-ms-viewport     { width: device-width; }
+@-o-viewport      { width: device-width; }
+@viewport         { width: device-width; }
 button {
   -ms-touch-action: manipulation;
       touch-action: manipulation;
@@ -14,6 +17,6 @@ button {
   h3 {font-size: 1.2em; margin: 1rem 0;}
   hr {margin: 1rem 0;}
   p {margin-bottom: 0;}
-  #topDiv {display:none !important;}
+  #inputSection {display:none !important;}
   .container {max-width: 100%; width: 100%}
 }

@@ -1,4 +1,4 @@
-/* jshint globalstrict: true, browser: true, devel: true, sub: true, esversion: 5, asi: true, -W041 */ /* global $, alert */
+/* jshint globalstrict: true, browser: true, devel: true, sub: true, esversion: 5, asi: true, -W041 */ /* global $, alert, Chart */
 'use strict'; // eslint-disable-line
 
 var finalArray = {
@@ -45,13 +45,6 @@ function handleDuplicates (arr, block) {
 }
 
 function analyseText () {
-  // clear previous print and csv buttons if it exists
-  var btnCSV = document.getElementById('btnCSV')
-  if (btnCSV) {
-    btnCSV.parentElement.removeChild(btnCSV)
-  }
-  document.getElementById('btnPrint').classList.add('hidden')
-
   // GET TEXT
   var contentDiv = document.getElementById('content')
   var textInput = $('#textInput').val().trim().toLowerCase()
@@ -79,7 +72,7 @@ function analyseText () {
       })
       var csvContent = lineArray.join('\n')
       var encodedUri = encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
-      $('#buttonRow').append("<a class='button' id='csvButton' href='" + encodedUri + "' download='perma_tokens_" + $.now() + ".csv'>Save CSV</a>")
+      $('#buttonRow').append("<a class='btn btn-default' id='csvButton' href='" + encodedUri + "' download='perma_tokens_" + $.now() + ".csv'>Save CSV</a>")
     }
 
     // ANALYSE TEXT
@@ -147,30 +140,30 @@ function analyseText () {
       }
     })
 
-    // calculate the number of positive and negative words, if the user has checked the box
+    // calculate the number of positive and negative words
     var wordCount = inputArray.length
     var positiveWords = PERMALexResults.posP.length + PERMALexResults.posE.length + PERMALexResults.posR.length + PERMALexResults.posM.length + PERMALexResults.posA.length
     var negativeWords = PERMALexResults.negP.length + PERMALexResults.negE.length + PERMALexResults.negR.length + PERMALexResults.negM.length + PERMALexResults.negA.length
     var posCent = (((positiveWords / wordCount) * 100).toFixed(2))
     var negCent = (((negativeWords / wordCount) * 100).toFixed(2))
-    var numberStatement = '<p>' + positiveWords + ' positive PERMA words (' + posCent + '% of word count), and ' + negativeWords + ' negative PERMA words (' + negCent + '% of word count).</p>'
+    var wcx = (wordCount - (positiveWords + negativeWords))
 
     // calculate ratio
     var ratioStatement = ''
     if (positiveWords === 0 || negativeWords === 0) {
       if (positiveWords < negativeWords) {
-        ratioStatement = '<p>I found only negative PERMA words in the input. No ratio to calculate.</p>'
+        ratioStatement = 'Of the matches, 100% were negative PERMA words.'
       } else if (positiveWords > negativeWords) {
-        ratioStatement = '<p>I found only positive PERMA words in the input. No ratio to calculate.</p>'
+        ratioStatement = 'Of the matches, 100% were positive PERMA words.'
       } else if (positiveWords === negativeWords) {
-        ratioStatement = '<p>I found no PERMA words in the input. No ratio to calculate.</p>'
+        ratioStatement = 'There were no PERMA words in the input.'
       }
     } else if (positiveWords < negativeWords) {
-      ratioStatement = '<p>For every positive PERMA word there are ' + ((negativeWords / positiveWords).toFixed(1)) + ' times as many negative PERMA words.</p>'
+      ratioStatement = 'For every positive PERMA word there are ' + ((negativeWords / positiveWords).toFixed(1)) + ' times as many negative PERMA words.'
     } else if (positiveWords > negativeWords) {
-      ratioStatement = '<p>For every negative PERMA word there are ' + ((positiveWords / negativeWords).toFixed(1)) + ' times as many positive PERMA words.</p>'
+      ratioStatement = 'For every negative PERMA word there are ' + ((positiveWords / negativeWords).toFixed(1)) + ' times as many positive PERMA words.'
     } else if (positiveWords === negativeWords) {
-      ratioStatement = '<p>There are an equal number of positive and negative PERMA words.</p>'
+      ratioStatement = 'There are an equal number of positive and negative PERMA words. 1:1.'
     }
 
     // remove duplicates from "PERMALexResuts" and dump them to "finalArray" so we can display them neatly
@@ -178,12 +171,91 @@ function analyseText () {
       handleDuplicates(PERMALexResults[a], a)
     })
 
+    // create charts
+    var ctx1 = document.getElementById('donut').getContext('2d')
+    var ctx2 = document.getElementById('spider').getContext('2d')
+    var piedata = {
+      labels: [
+        'Positive PERMA Words',
+        'Negative PERMA Words',
+        'Neutral Words'
+      ],
+      datasets: [
+        {
+          data: [positiveWords, negativeWords, wcx],
+          backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+          ],
+          hoverBackgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+          ]
+        }]
+    }
+    var radardata = {
+      labels: [
+        'Positive Emotion',
+        'Engagement',
+        'Relationships',
+        'Meaning',
+        'Achievement'
+      ],
+      datasets: [
+        {
+          label: 'Positive PERMA Words',
+          backgroundColor: 'rgba(179,181,198,0.2)',
+          borderColor: 'rgba(179,181,198,1)',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(179,181,198,1)',
+          data: [
+            PERMALexResults.posP.length,
+            PERMALexResults.posE.length,
+            PERMALexResults.posR.length,
+            PERMALexResults.posM.length,
+            PERMALexResults.posA.length
+          ]
+        },
+        {
+          label: 'Negative PERMA Words',
+          backgroundColor: 'rgba(255,99,132,0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          pointBackgroundColor: 'rgba(255,99,132,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255,99,132,1)',
+          data: [
+            PERMALexResults.negP.length,
+            PERMALexResults.negE.length,
+            PERMALexResults.negR.length,
+            PERMALexResults.negM.length,
+            PERMALexResults.negA.length
+          ]
+        }
+      ]
+    }
+    var myDoughnutChart = new Chart(ctx1, { // eslint-disable-line
+      type: 'pie',
+      data: piedata
+    })
+    var myRadarChart = new Chart(ctx2, { // eslint-disable-line
+      type: 'radar',
+      data: radardata
+    })
+
     // display results
     $('#wordcount').html(wordCount)
     $('#combinations').html((mCount + nmCount))
     $('#matches').html(mCount)
+    $('#pmatches').html(positiveWords)
+    $('#nmatches').html(negativeWords)
     $('#percent').html(((mCount / wordCount) * 100).toFixed(2))
-    $('#numbers').html(numberStatement)
+    $('#ppercent').html(posCent)
+    $('#npercent').html(negCent)
     $('#ratio').html(ratioStatement)
     $('#posP').html(finalArray.posP.toString())
     $('#negP').html(finalArray.negP.toString())
@@ -197,9 +269,6 @@ function analyseText () {
     $('#negA').html(finalArray.negA.toString())
     contentDiv.classList.remove('hidden')
 
-    // append print button
-    document.getElementById('btnPrint').classList.remove('hidden')
-
     // cleanup after everything is displayed
     $.each(finalArray, function (key, value) {
       finalArray[key].length = 0
@@ -208,18 +277,41 @@ function analyseText () {
 }
 
 document.addEventListener('DOMContentLoaded', function loaded () {
+  // activate tooltips
+  $('[data-toggle="tooltip"]').tooltip()
+
+  // global chart options
+  Chart.defaults.global.responsive = false
+
   // CSV Alphabetizer button toggler
   document.getElementById('generateCSVCheck').addEventListener('click', function (e) {
     var alphaCSV = document.getElementById('alphaCSV')
-    if (alphaCSV.classList.contains('hidden')) {
-      alphaCSV.classList.remove('hidden')
+    var alphaCSVCheck = document.getElementById('alphabetiseCheck')
+    if (alphaCSV.classList.contains('disabled')) {
+      alphaCSV.classList.remove('disabled')
+      alphaCSVCheck.disabled = false
     } else {
-      alphaCSV.classList.add('hidden')
+      alphaCSV.classList.add('disabled')
+      alphaCSVCheck.disabled = true
     }
   }, false)
 
   // event listeners
   document.getElementById('startButton').addEventListener('click', analyseText, false)
-  document.getElementById('btnPrint').addEventListener('click', window.print.bind(window), {passive: true})
   document.removeEventListener('DOMContentLoaded', loaded)
+
+  /*
+  * IE10 viewport hack for Surface/desktop Windows 8 bug
+  * Copyright 2014-2015 Twitter, Inc.
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+  if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+    var msViewportStyle = document.createElement('style')
+    msViewportStyle.appendChild(
+      document.createTextNode(
+        '@-ms-viewport{width:auto!important}'
+      )
+    )
+    document.querySelector('head').appendChild(msViewportStyle)
+  }
 }); // eslint-disable-line

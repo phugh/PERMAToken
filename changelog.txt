@@ -1,5 +1,14 @@
 changelog
 
+** V2.0.0 ** 10/04/17
+- Rename to PERMA Text Analyser
+- New icon
+- Move from skeleton to bootstrap
+- Add charts using chart.js
+- Remove print button (not reliable enough)
+- Add better head meta tags
+- Small code improvements
+
 ** v1.6.1 ** 07/04/17
 - Fix breaks caused by jQuery 3.2.0+
 - Improve regex/array efficiency
