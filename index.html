@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>PERMA Text Analyser - v2.0.0</title>
+        <title>PERMA Text Analyser - v2.0.1</title>
         <meta name="description" content="Tokenize and match text to the PERMAv3 Lexicon.">
         <meta name="author" content="Peter Hughes - www.phugh.es">
         <meta name="robots" content="index, follow">
@@ -12,7 +12,7 @@
 
         <meta name="theme-color" content="#bb463d">
         <meta name="mobile-web-app-capable" content="yes">
-        <meta name="application-name" content="New Routes">
+        <meta name="application-name" content="PERMA Text Analyser">
         <link rel="manifest" href="manifest.json">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -43,24 +43,38 @@
                     <label for="textInput">Input:</label>
                     <textarea class="form-control" placeholder="Dear diary…" id="textInput"></textarea>
                 </div>
-                    <label class="checkbox-inline" data-toggle="tooltip" data-placement="bottom" title="The tsp75 lexicon contains fewer words. It will result in fewer, but more accurate, matches.">
-                        <input type="checkbox" id="shortPERMACheck"> Use "tsp75" Lexicon
-                    </label>
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="generateCSVCheck"> Generate CSV of tokens
-                    </label>
-                    <label id="alphaCSV" class="checkbox-inline disabled">
-                        <input type="checkbox" id="alphabetiseCheck" disabled> Sort tokens alphabetically
-                    </label>
+                <div class="row">
+                    <div class="col-xs-12 col-md-3">
+                        <label class="checkbox-inline" data-toggle="tooltip" data-placement="bottom" title="The tsp75 lexicon contains fewer words. It will result in fewer, but more accurate, matches.">
+                            <input type="checkbox" id="shortPERMACheck"> Use "tsp75" Lexicon
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="generateCSVCheck"> Generate CSV of tokens
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <label id="alphaCSV" class="checkbox-inline disabled">
+                            <input type="checkbox" id="alphabetiseCheck" disabled> Sort tokens alphabetically
+                        </label>
+                    </div>
+                </div>
                 <p>&nbsp;</p>
-                <div id="buttonRow">
-                    <button id="startButton" class="btn btn-primary" type="button">Go!</button>
+                <div class="row">
+                    <div id="buttonRow" class="col-xs-3 col-sm-3 col-sm-push-3"></div>
+                    <div class="hidden-xs col-sm-3 col-sm-pull-3">
+                        <button class="startButton btn btn-primary" type="button">Start!</button>
+                    </div>
+                    <div class="hidden-sm hidden-md hidden-lg col-xs-3 col-xs-push-6">
+                        <button class="startButton btn btn-primary" type="button">Start!</button>
+                    </div>
                 </div>
                 <hr/>
             </section>
 
             <!-- Output Section -->
-            <section id="content" class="hidden">
+            <section id="outputSection" class="hidden">
                 <h2>Results</h2>
                 <p><strong>Word Combinations Tested: </strong><span id="combinations"></span> combinations.</p>
                 <p><strong>Wordcount: </strong><span id="wordcount"></span> words.</p>
@@ -69,10 +83,10 @@
                 <p><strong>Negative PERMA Words Matched: </strong><span id="nmatches"></span> words. <span id="npercent"></span>% of word count.</p>
                 <p><strong>Ratio: </strong><span id="ratio"></span></p>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-xs-12 col-md-6">
                         <canvas id="donut" width="400" height="400"></canvas>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-xs-12 col-md-6">
                         <canvas id="spider" width="400" height="400"></canvas>
                     </div>
                 </div>
@@ -99,7 +113,7 @@
         </main>
 
         <footer class="container">
-            <p>The PERMA Text Tokenizer, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Tokenizer is released under the same licence. Uses <a href="https://github.com/dhg/Skeleton" target="_blank">Skeleton CSS</a> and <a href="https://jquery.org" target="_blank">jQuery</a>.</p>
+            <p>The PERMA Text Analyser, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Analyser is released under the same licence.</p>
         </footer>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>

@@ -14,7 +14,6 @@ var finalArray = {
   negA: []
 }
 
-var repeats = {}
 
 // 'endsWith' fallback
 if (typeof String.prototype.endsWith !== 'function') {
@@ -31,22 +30,18 @@ function handleDuplicates (arr, block) {
     if (!obj[arr[i]]) {
       obj[arr[i]] = 1
       item = arr[i]
+      finalArray[block].push(' ' + item)
     } else {
-      if (!repeats[arr[i]]) {
-        repeats[arr[i]] = 2
-        item = (arr[i] + '[2]')
-      } else {
-        repeats[arr[i]]++
-        item = (arr[i] + '[' + repeats[arr[i]] + ']')
-      }
+      var index = finalArray[block].indexOf(' ' + arr[i] + '[' + obj[arr[i]] + ']')
+      if (index === -1) index = finalArray[block].indexOf(' ' + arr[i])
+      obj[arr[i]] = obj[arr[i]] + 1
+      finalArray[block][index] = (' ' + arr[i] + '[' + obj[arr[i]] + ']')
     }
   }
-  if (item != null) finalArray[block].push(' ' + item)
 }
 
 function analyseText () {
   // GET TEXT
-  var contentDiv = document.getElementById('content')
   var textInput = $('#textInput').val().trim().toLowerCase()
   if (textInput.length === 0) {
     alert('Input box is empty!')
@@ -168,8 +163,11 @@ function analyseText () {
 
     // remove duplicates from "PERMALexResuts" and dump them to "finalArray" so we can display them neatly
     $.each(PERMALexResults, function (a, b) {
-      handleDuplicates(PERMALexResults[a], a)
+      handleDuplicates(b, a)
     })
+
+    console.log(finalArray)
+
 
     // create charts
     var ctx1 = document.getElementById('donut').getContext('2d')
@@ -184,13 +182,13 @@ function analyseText () {
         {
           data: [positiveWords, negativeWords, wcx],
           backgroundColor: [
+            '#77dd77',
             '#FF6384',
-            '#36A2EB',
             '#FFCE56'
           ],
           hoverBackgroundColor: [
+            '#77dd77',
             '#FF6384',
-            '#36A2EB',
             '#FFCE56'
           ]
         }]
@@ -206,12 +204,12 @@ function analyseText () {
       datasets: [
         {
           label: 'Positive PERMA Words',
-          backgroundColor: 'rgba(179,181,198,0.2)',
-          borderColor: 'rgba(179,181,198,1)',
+          backgroundColor: 'rgba(119, 221, 119,0.2)',
+          borderColor: '#77dd77',
           pointBackgroundColor: 'rgba(179,181,198,1)',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(179,181,198,1)',
+          pointHoverBorderColor: '#77dd77',
           data: [
             PERMALexResults.posP.length,
             PERMALexResults.posE.length,
@@ -236,7 +234,16 @@ function analyseText () {
             PERMALexResults.negA.length
           ]
         }
-      ]
+      ],
+      options: {
+        scale: {
+          ticks: {
+            beginAtZero: true,
+            min: 0,
+            stepSize: 1
+          }
+        }
+      }
     }
     var myDoughnutChart = new Chart(ctx1, { // eslint-disable-line
       type: 'pie',
@@ -267,12 +274,7 @@ function analyseText () {
     $('#negM').html(finalArray.negM.toString())
     $('#posA').html(finalArray.posA.toString())
     $('#negA').html(finalArray.negA.toString())
-    contentDiv.classList.remove('hidden')
-
-    // cleanup after everything is displayed
-    $.each(finalArray, function (key, value) {
-      finalArray[key].length = 0
-    })
+    document.getElementById('outputSection').classList.remove('hidden')
   }
 }
 
@@ -297,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function loaded () {
   }, false)
 
   // event listeners
-  document.getElementById('startButton').addEventListener('click', analyseText, false)
+  $('.startButton').on('click', analyseText)
   document.removeEventListener('DOMContentLoaded', loaded)
 
   /*
