@@ -4,37 +4,37 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>PERMA Text Analyser - v2.0.1</title>
-        <meta name="description" content="Tokenize and match text to the PERMAv3 Lexicon.">
+        <title>Positive Psychology Text Analyser</title>
+        <meta name="description" content="Analyse any text against various positive psychology lexicons.">
         <meta name="author" content="Peter Hughes - www.phugh.es">
         <meta name="robots" content="index, follow">
-        <link rel="canonical" href="http://www.phugh.es/tech/permatoken">
-
         <meta name="theme-color" content="#bb463d">
         <meta name="mobile-web-app-capable" content="yes">
-        <meta name="application-name" content="PERMA Text Analyser">
+        <meta name="application-name" content="Positive Psychology Text Analyser">
         <link rel="manifest" href="manifest.json">
+        <link rel="canonical" href="http://www.phugh.es/tech/permatoken">
 
         <script type='application/ld+json'>
             {
             "@context": "http://www.schema.org",
             "@type": "product",
             "brand": "Peter Hughes",
-            "name": "PERMA Text Analyser",
+            "name": "Positive Psychology Text Analyser",
             "image": "http://www.phugh.es/tech/permatoken/192.png",
-            "description": "Analyse any text against the WWBP PERMA Lexicon"
+            "description": "Analyse any text against various positive psychology lexicons."
             }
         </script>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
         <link rel='stylesheet' href='css/style.css'/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     </head>
-    <body>
+    <body class='loading'>
         <nav class="navbar navbar-inverse navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
-                    <span class="navbar-brand">PERMA Text Analyser</span>
+                    <span class="navbar-brand">Positive Psychology Text Analyser</span>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
@@ -48,26 +48,72 @@
             <!-- Input Section -->
             <section id="inputSection">
                 <strong>Welcome</strong>
-                <p>This will take all of the text from the input box below and match it against the PERMAv3 Lexicon, it can also output it as a tokenized CSV file.</p>
-                <p>The tokenizer may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenizing.</p>
+                <p>The Positive Psychology Text Analyser allows you to easily compare any text to the <a href="http://www.wwbp.org" target="_blank">World Wellbeing Project's</a> <a href="http://www.wwbp.org/publications.html#p76" target="_blank">PERMA Lexicons</a> in English and <span lang="es">en Español</span>, as well as the <a href="http://www.wwbp.org/lexica.html" target="_blank">Prospection Lexicon (Temporal Orientation) and Optimism Lexicon</a>. Simply copy any text (transcripts, essays, etc.) into the textbox below and press Start!</p>
+                <p>This will take all of the text from the input box below and match it against the full PERMAv3 Lexicon. You can also use the shorter but more accurate <a href="http://www.wwbp.org/publications.html#p76" target="_blank">"tsp75" lexicon</a> by ticking that option.</p>
+                <p>It can also output your text as a tokenized CSV file. The tokenizer may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenizing if you wish to use that feature.</p>
                 <div class="form-group">
                     <label for="textInput">Input:</label>
                     <textarea class="form-control" placeholder="Dear diary…" id="textInput"></textarea>
                 </div>
+                <strong>Lexicon Language:</strong>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="spanishCheck"> Use Spanish PERMA Lexicon (<span lang="es">Usar el léxico Español</span>)
+                        </label>
+                    </div>
+                </div>
+                <strong>PERMA Lexicon Options:</strong>
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <label class="radio-inline">
+                            <input type="radio" name="permaRadio" id="originalLex" value="1" checked="checked"> Use original lexicon (permaV3_dd.csv)
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <label class="radio-inline">
+                            <input type="radio" name="permaRadio" id="manualLex" value="2"> Use manual lexicon (permaV3_manual.csv)
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <label class="radio-inline">
+                            <input type="radio" name="permaRadio" id="tsp75Lex" value="3"> Use "tsp75" lexicon (permaV3_manual_tsp75.csv)
+                        </label>
+                    </div>
+                </div>
+                <strong>Additional Lexica:</strong>
                 <div class="row">
                     <div class="col-xs-12 col-md-3">
-                        <label class="checkbox-inline" data-toggle="tooltip" data-placement="bottom" title="The tsp75 lexicon contains fewer words. It will result in fewer, but more accurate, matches.">
-                            <input type="checkbox" id="shortPERMACheck"> Use "tsp75" Lexicon
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="prospectCheck"> Analyse Prospection
                         </label>
                     </div>
                     <div class="col-xs-12 col-md-3">
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="generateCSVCheck"> Generate CSV of tokens
+                            <input type="checkbox" id="affectCheck"> Analyse Affect
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <label id="optBox" class="checkbox-inline disabled">
+                            <input type="checkbox" id="optimismCheck" disabled> Analyse Optimism
+                        </label>
+                    </div>
+                </div>
+                <strong>More Options:</strong>
+                <div class="row">
+                    <div class="col-xs-12 col-md-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="cloudCheck"> Generate a wordcloud
+                        </label>
+                    </div>
+                     <div class="col-xs-12 col-md-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="CSVCheck"> Generate CSV of tokens
                         </label>
                     </div>
                     <div class="col-xs-12 col-md-3">
                         <label id="alphaCSV" class="checkbox-inline disabled">
-                            <input type="checkbox" id="alphabetiseCheck" disabled> Sort tokens alphabetically
+                            <input type="checkbox" id="alphaCheck" disabled> Sort tokens alphabetically
                         </label>
                     </div>
                 </div>
@@ -77,7 +123,7 @@
                     <div class="hidden-xs col-sm-3 col-sm-pull-3">
                         <button class="startButton btn btn-primary" type="button">Start!</button>
                     </div>
-                    <div class="hidden-sm hidden-md hidden-lg col-xs-3 col-xs-push-6">
+                    <div class="visible-xs col-xs-3 col-xs-push-6">
                         <button class="startButton btn btn-primary" type="button">Start!</button>
                     </div>
                 </div>
@@ -87,49 +133,140 @@
             <!-- Output Section -->
             <section id="outputSection" class="hidden">
                 <h2>Results</h2>
-                <p><strong>Word Combinations Tested: </strong><span id="combinations"></span> combinations.</p>
                 <p><strong>Wordcount: </strong><span id="wordcount"></span> words.</p>
-                <p><strong>Total PERMA Words Matched: </strong><span id="matches"></span> words. <span id="percent"></span>% of word count.</p>
-                <p><strong>Positive PERMA Words Matched: </strong><span id="pmatches"></span> words. <span id="ppercent"></span>% of word count.</p>
-                <p><strong>Negative PERMA Words Matched: </strong><span id="nmatches"></span> words. <span id="npercent"></span>% of word count.</p>
+                <hr>
+                <h3>PERMA Results</h3>
+                <p><strong>Total PERMA <span class="tw"></span> matches: </strong><span id="matches"></span> <span class="tw"></span>, <span id="percent"></span>% of word count.</p>
+                <p><strong>Positive PERMA <span class="tw"></span> matches: </strong><span id="pmatches"></span> <span class="tw"></span>, <span id="ppercent"></span>% of word count.</p>
+                <p><strong>Negative PERMA <span class="tw"></span> matches: </strong><span id="nmatches"></span> <span class="tw"></span>, <span id="npercent"></span>% of word count.</p>
                 <p><strong>Ratio: </strong><span id="ratio"></span></p>
-                <div class="row">
+                <div id="lex" class="hidden">
+                    <p><strong>Lex: </strong></p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            Positive
+                            <ul>
+                                <li id="ppl"></li>
+                                <li id="pel"></li>
+                                <li id="prl"></li>
+                                <li id="pml"></li>
+                                <li id="pal"></li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            Negative
+                            <ul>
+                                <li id="npl"></li>
+                                <li id="nel"></li>
+                                <li id="nrl"></li>
+                                <li id="nml"></li>
+                                <li id="nal"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row hidden">
                     <div class="col-xs-12 col-md-6">
                         <canvas id="donut" width="400" height="400"></canvas>
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                    <div id="permaRadar" class="col-xs-12 col-md-6 hidden">
                         <canvas id="spider" width="400" height="400"></canvas>
                     </div>
                 </div>
                 <hr>
-                <h3>Breakdown</h3>
+                <h3>PERMA Breakdown</h3>
                 <p>Duplicate appearance count appears in brackets next to words.<p>
                 <p>&nbsp;</p>
-                <p><strong>P+:</strong><span id="posP"></span></p>
-                <p><strong>P-:</strong><span id="negP"></span></p>
+                <p><strong>P+:</strong> <span id="posP"></span></p>
+                <p><strong>P-:</strong> <span id="negP"></span></p>
                 <hr>
-                <p><strong>E+:</strong><span id="posE"></span></p>
-                <p><strong>E-:</strong><span id="negE"></span></p>
+                <p><strong>E+:</strong> <span id="posE"></span></p>
+                <p><strong>E-:</strong> <span id="negE"></span></p>
                 <hr>
-                <p><strong>R+:</strong><span id="posR"></span></p>
-                <p><strong>R-:</strong><span id="negR"></span></p>
+                <p><strong>R+:</strong> <span id="posR"></span></p>
+                <p><strong>R-:</strong> <span id="negR"></span></p>
                 <hr>
-                <p><strong>M+:</strong><span id="posM"></span></p>
-                <p><strong>M-:</strong><span id="negM"></span></p>
+                <p><strong>M+:</strong> <span id="posM"></span></p>
+                <p><strong>M-:</strong> <span id="negM"></span></p>
                 <hr>
-                <p><strong>A+:</strong><span id="posA"></span></p>
-                <p><strong>A-:</strong><span id="negA"></span></p>
+                <p><strong>A+:</strong> <span id="posA"></span></p>
+                <p><strong>A-:</strong> <span id="negA"></span></p>
                 <hr>
+                <div id="prospectRes" class="hidden">
+                    <h3>Prospection Results</h3>
+                    <p><strong>Total Prospection tokens: </strong><span id="prospTotal"></span> tokens, <span id="prospCent"></span>% of wordcount.</p>
+                    <p><strong>Past Prospection tokens: </strong><span id="prospPast"></span> tokens, <span id="pastCent"></span>% of wordcount.</p>
+                    <p><strong>Present Prospection tokens: </strong><span id="prospPresent"></span> tokens, <span id="presCent"></span>% of wordcount..</p>
+                    <p><strong>Future Prospection tokens: </strong><span id="prospFuture"></span> tokens, <span id="futureCent"></span>% of wordcount..</p>
+                    <p><strong>Lex: </strong></p>
+                    <ul>
+                        <li id="pastLex"></li>
+                        <li id="presLex"></li>
+                        <li id="futrLex"></li>
+                    </ul>
+                    <div class="row hidden">
+                        <div class="col-xs-12 col-md-6">
+                            <canvas id="pdonut" width="400" height="400"></canvas>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <canvas id="pspider" width="400" height="400"></canvas>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>Prospection Breakdown</h4>
+                    <p><strong>Past: </strong><span id="past"></span></p>
+                    <p><strong>Present: </strong><span id="present"></span></p>
+                    <p><strong>Future: </strong><span id="future"></span></p>
+                    <hr>
+                </div>
+                <div id="affectRes" class="hidden">
+                    <h3>Affect / Intensity Breakdown</h3>
+                    <p><strong>Total A/I tokens: </strong><span id="affTotal"></span> tokens, <span id="affCent"></span>% of wordcount.</p>
+                    <p><strong>Affect tokens: </strong><span id="affAff"></span> tokens, <span id="aCent"></span>% of wordcount.</p>
+                    <p><strong>Intensity tokens: </strong><span id="affInt"></span> tokens, <span id="iCent"></span>% of wordcount..</p>
+                    <p><strong>Lex: </strong></p>
+                    <ul>
+                        <li id="affLex"></li>
+                        <li id="intLex"></li>
+                    </ul>
+                    <hr>
+                    <h3>Affect Breakdown</h3>
+                    <p><strong>Affect: </strong><span id="affPrint"></span></p>
+                    <p><strong>Intensity: </strong><span id="intPrint"></span></p>
+                    <hr>
+                </div>
+                <div id="optimRes" class="hidden">
+                    <h3>Optimism Breakdown</h3>
+                    <p><strong>Total Optimism tokens: </strong><span id="optTotal"></span> tokens, <span id="optCent"></span>% of wordcount.</p>
+                    <p><strong>Lex: </strong> Optimism: <span id="optLex"></span>.</p>
+                    <hr>
+                    <h3>Optimism Breakdown</h3>
+                    <p><strong>Optimism: </strong><span id="optPrint"></span></p>
+                    <hr>
+                </div>
             </section>
         </main>
 
         <footer class="container">
+            <p><strong>References</strong></p>
+            <p><cite><a href="https://encrypted.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwibyrmg7prTAhXGslQKHXftBtsQFggeMAA&url=https%3A%2F%2Fpsb.stanford.edu%2Fpsb-online%2Fproceedings%2Fpsb16%2Fschwartz.pdf&usg=AFQjCNELj_TxuIl-apHaufFB8DbEVicnww&sig2=rJ5IvA9OIMUbwJ5cjcr46A" target="_blank">Schwartz, H.A., Sap, M., Kern, M.L., Eichstaedt, J.C., Kapelner, A., Agrawal, M., Blanco, E., Dziurzynski, L., Park, G., Stillwell, D. & Kosinski, M. (2016). Predicting individual well-being through the language of social media. In Biocomputing 2016: Proceedings of the Pacific Symposium (pp. 516-527)</a></cite>.</p>
+            <p><cite><a href="https://www.seas.upenn.edu/~hansens/tempor-naacl15-cr.pdf" target="_blank">Schwartz, H. A., Park, G., Sap, M., Weingarten, E., Eichstaedt, J., Kern, M., Stillwell, D., Kosinski, M., Berger, J., Seligman, M., & Ungar, L. (2015). Extracting Human Temporal Orientation from Facebook Language. NAACL-2015: Conference of the North American Chapter of the Association for Computational Linguistics</a></cite>.</p>
+            <p><strong>Credits and Acknowledgements</strong></p>
             <p>The PERMA Text Analyser, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The PERMA Text Analyser is released under the same licence.</p>
         </footer>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <div id="loader" class="modal">
+            <div class="center-block">
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <h1 class="text-center">LOADING DATA PLEASE WAIT!</h1>
+                <p class="text-center">Depending on your connection speed this may take a minute or so.</p>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/new.js"></script>
     </body>
 </html>

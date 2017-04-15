@@ -1,0 +1,14 @@
+{
+  "asi":          true,
+  "browser":      true,
+  "devel":        true,
+  "eqnull":       true,
+  "sub":          true,
+  "-W041":        true,
+  "esversion":    5,
+  "globals": {
+    "$": true,
+    "Chart": true
+  },
+  "predef" : ["$", "Chart"]
+}

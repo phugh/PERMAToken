@@ -1,13 +1,23 @@
-@-ms-viewport     { width: device-width; }
-@-o-viewport      { width: device-width; }
-@viewport         { width: device-width; }
+@-ms-viewport { width: device-width; }
+@-o-viewport { width: device-width; }
+@viewport { width: device-width; }
 button {
   -ms-touch-action: manipulation;
       touch-action: manipulation;
 }
-.hidden {
-  display: none !important;
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba(255, 255, 255, .8);
 }
+body.loading {overflow: hidden;}
+body.loading main.container {filter: blur(3px);}
+body.loading .modal {display: block;}
 @media print {
   a:after {content:" (" attr(href) ") ";font-size:0.8em;font-weight:normal;}
   a {color: #000; text-decoration: none; font-weight: normal};
@@ -18,5 +28,5 @@ button {
   hr {margin: 1rem 0;}
   p {margin-bottom: 0;}
   #inputSection {display:none !important;}
-  .container {max-width: 100%; width: 100%}
+  .container {width: auto}
 }
