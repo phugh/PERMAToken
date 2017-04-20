@@ -1,10 +1,10 @@
 {
   "asi":          true,
-  "browser":      true,
-  "devel":        true,
-  "eqnull":       true,
+  "browser":      false,
+  "devel":        false,
+  "eqnull":       false,
   "sub":          true,
-  "-W041":        true,
+  "-W041":        false,
   "esversion":    5,
   "globals": {
     "$": true,
