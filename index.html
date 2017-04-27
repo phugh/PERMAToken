@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="alert alert-warning robots-nocontent" role="alert">
-                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This is beta software, which means it is still in development. Please check and double-check the results you receive here, the creator does not accept responsibility for inaccurate results.</p>
+                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check and double-check the results you receive here, the creator does not accept responsibility for inaccurate results.</p>
             </div>
             <!--googleon: index-->
 
@@ -73,37 +73,41 @@
                 <hr>
                 <p><strong>2 - Choose your analysis options:</strong></p>
                 <div class="panel panel-default">
-                    <div class="panel-heading">PERMA Lexica Language:</div>
+                    <div class="panel-heading">PERMA Lexica:
+                        <div class="navbar-right">
+                            <a tabindex="0" role="button" class="btn btn-link" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.">
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </div>
                     <div class="panel-body">
                         <div class="col-xs-12 col-md-4">
-                            <label class="radio-inline">
-                                <input type="radio" name="langRadio" id="englishCheck" value="1" checked="checked"> Use an English PERMA Lexicon
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-md-6">
-                            <label class="radio-inline">
-                                <input type="radio" name="langRadio" id="spanishCheck" value="2"> Use the Spanish PERMA Lexicon (<span lang="es">Usar el léxico PERMA Español</span>)
-                            </label>
+                            <label for="permaSelect">Select a lexicon:</label>
+                            <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="The Original and Spanish lexica are weighted, data-driven lexica. The 'Manual' and 'TSP75' lexica are 'created in the spirit of Linguistic Inquiry and Word Count (LIWC)' and are not weighted."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                            <select class="form-control" id="permaSelect">
+                                <option value="1">Data-Driven Lexicon (permaV3_dd.csv)</option>
+                                <option value="2">Manual Lexicon (permaV3_manual.csv)</option>
+                                <option value="3">TSP75 Lexicon (permaV3_manual_tsp75.csv)</option>
+                                <option value="4">Spanish Data-Driven Lexicon (dd_spermaV3.csv)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading">English PERMA Lexica Options:</div>
+                    <div class="panel-heading">Data-Driven PERMA Lexica Options:</div>
                     <div class="panel-body">
                         <div class="col-xs-12 col-md-4">
-                            <label class="radio-inline">
-                                <input type="radio" name="permaRadio" id="originalLex" value="1" checked="checked"> Use original lexicon (permaV3_dd.csv)
-                            </label>
+                            <label for="encodeSelect">Word Encoding:</label>
+                            <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Binary encoding counts matches as booleans (1 = match, 0 = not matched). Frequency counts the number of matches ('x' was matched 3 times, etc.)"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                            <select class="form-control" id="encodeSelect">
+                                <option value="binary" selected="selected">Binary</option>
+                                <option value="freq">Frequency</option>
+                            </select>
                         </div>
                         <div class="col-xs-12 col-md-4">
-                            <label class="radio-inline">
-                                <input type="radio" name="permaRadio" id="manualLex" value="2"> Use manual lexicon (permaV3_manual.csv)
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-md-4">
-                            <label class="radio-inline">
-                                <input type="radio" name="permaRadio" id="tsp75Lex" value="3"> Use "tsp75" lexicon (permaV3_manual_tsp75.csv)
-                            </label>
+                            <label for="minWeight">Minimum Weight (min: <span id="lMin"></span>, max: <span id="lMax"></span>):</label>
+                            <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches at a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                            <input type="number" id="minWeight" class="form-control" step="0.01">
                         </div>
                     </div>
                 </div>
@@ -114,6 +118,7 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" id="prospectCheck"> Analyse Prospection
                             </label>
+                            <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses temporal orientation: emphasis on past, present or future."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <label class="checkbox-inline">
@@ -124,11 +129,28 @@
                             <label id="optBox" class="checkbox-inline disabled">
                                 <input type="checkbox" id="optimismCheck" disabled> Analyse Optimism
                             </label>
+                            <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="By combining the affect lexicon with the future category of the prospection lexicon, we can analyse optimism (positive future-oriented thinking)."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <label class="checkbox-inline ">
+                                <input type="checkbox" id="ageCheck"> Predict Age
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <label class="checkbox-inline ">
+                                <input type="checkbox" id="genderCheck"> Predict Gender
+                            </label>
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading">More Options:</div>
+                    <div class="panel-heading">More Options:
+                        <div class="navbar-right">
+                            <a tabindex="0" role="button" class="btn btn-link" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies will be replaced with '^'.">
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </div>
                     <div class="panel-body">
                         <div class="col-xs-12 col-md-4">
                             <label class="checkbox-inline">
@@ -279,8 +301,9 @@
                     <hr>
                 </div>
                 <div id="affectRes" class="hidden">
-                    <h3>Affect / Intensity Breakdown</h3>
+                    <h3>Affect / Intensity Results</h3>
                     <p><strong>Total A/I matches: </strong><span id="affTotal"></span> items.</p>
+                    <p><strong>Scale:</strong> Affect: 1 = very negative, 5 = neutral, 9 = very positive. Intensity: 1 = netural, 9 = high.</p>
                     <table id="alex" class="table table-striped">
                     <thead>
                         <tr>
@@ -304,8 +327,9 @@
                     <hr>
                 </div>
                 <div id="optimRes" class="hidden">
-                    <h3>Optimism Breakdown</h3>
+                    <h3>Optimism Results</h3>
                     <p><strong>Total Optimism matches: </strong><span id="optTotal"></span> items.</p>
+                    <p><strong>Scale:</strong> 1 = very pessimistic, 5 = neutral, 9 = very optimistic.</p>
                     <table id="olex" class="table table-striped">
                     <tbody>
                         <tr>
@@ -318,6 +342,16 @@
                     <p><strong>Optimism: </strong><span id="optPrint"></span></p>
                     <hr>
                 </div>
+                <div id="ageRes" class="hidden">
+                    <h3>Age Prediction Results</h3>
+                    <p><strong>Predicted age: </strong><span id="predAge"></span>.</p>
+                    <hr>
+                </div>
+                <div id="genRes" class="hidden">
+                    <h3>Gender Prediction Results</h3>
+                    <p><strong>Predicted gender: </strong><span id="predGen"></span> (<span id="genLex"></span>).</p>
+                    <hr>
+                </div>
             </section>
         </main>
 
@@ -325,10 +359,11 @@
             <p><strong>References</strong></p>
             <p><cite><a href="https://encrypted.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwibyrmg7prTAhXGslQKHXftBtsQFggeMAA&url=https%3A%2F%2Fpsb.stanford.edu%2Fpsb-online%2Fproceedings%2Fpsb16%2Fschwartz.pdf&usg=AFQjCNELj_TxuIl-apHaufFB8DbEVicnww&sig2=rJ5IvA9OIMUbwJ5cjcr46A" target="_blank">Schwartz, H.A., Sap, M., Kern, M.L., Eichstaedt, J.C., Kapelner, A., Agrawal, M., Blanco, E., Dziurzynski, L., Park, G., Stillwell, D. & Kosinski, M. (2016). Predicting individual well-being through the language of social media. In Biocomputing 2016: Proceedings of the Pacific Symposium (pp. 516-527)</a></cite>.</p>
             <p><cite><a href="https://www.seas.upenn.edu/~hansens/tempor-naacl15-cr.pdf" target="_blank">Schwartz, H. A., Park, G., Sap, M., Weingarten, E., Eichstaedt, J., Kern, M., Stillwell, D., Kosinski, M., Berger, J., Seligman, M., & Ungar, L. (2015). Extracting Human Temporal Orientation from Facebook Language. NAACL-2015: Conference of the North American Chapter of the Association for Computational Linguistics</a></cite>.</p>
-            <p><strong>Credits and Acknowledgements</strong></p>
-            <p>The Positive Psychology Text Analyser, created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. The Positive Psychology Text Analyser is released under the same licence.</p>
+            <P><cite>Schwartz, H. A., Eichstaedt, J. C., Kern, M. L., Dziurzynski, L., Ramones, S. M., Agrawal, M., Shah, A., Kosinski, M., Stillwell, D., Seligman, M. E., & Ungar, L. H. (2013). Personality, gender, and age in the language of social media: The Open-Vocabulary Approach. PLOS ONE, 8(9), . . e73791.</cite></P>
+            <p><strong>Acknowledgements</strong></p>
+            <p>The Positive Psychology Text Analyser (PPTA), created by <a href="http://www.phugh.es">P. Hughes</a>. The PERMAv3 lexicon (permaV3_manual.csv, permaV3_manual_tsp75.csv and permaV3_dd.csv) was created by Schwartz et al for Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. PPTA is released under the same licence. The PPTA and its creator are not associated with, and do not represent, Penn, WWBP, or any of the authors listed above.</p>
             <p><strong>Source</strong></p>
-            <p>This web app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank">here</a>. Pull requests welcome and encouraged!</p>
+            <p>This web-app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank">here</a>. Pull requests welcome and encouraged!</p>
         </footer>
 
         <div id="loader" class="modal">

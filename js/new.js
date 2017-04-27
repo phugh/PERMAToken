@@ -1,67 +1,14 @@
 /* global $, alert, Chart */
 
-// storage for the loaded PERMA lexicon
-var permaDLex = {
-  POS_P: {},
-  POS_E: {},
-  POS_R: {},
-  POS_M: {},
-  POS_A: {},
-  NEG_P: {},
-  NEG_E: {},
-  NEG_R: {},
-  NEG_M: {},
-  NEG_A: {}
-}
-var permaMLex = {
-  POS_P: {},
-  POS_E: {},
-  POS_R: {},
-  POS_M: {},
-  POS_A: {},
-  NEG_P: {},
-  NEG_E: {},
-  NEG_R: {},
-  NEG_M: {},
-  NEG_A: {}
-}
-var permaTLex = {
-  POS_P: {},
-  POS_E: {},
-  POS_R: {},
-  POS_M: {},
-  POS_A: {},
-  NEG_P: {},
-  NEG_E: {},
-  NEG_R: {},
-  NEG_M: {},
-  NEG_A: {}
-}
-var permaSLex = {
-  POS_P: {},
-  POS_E: {},
-  POS_R: {},
-  POS_M: {},
-  POS_A: {},
-  NEG_P: {},
-  NEG_E: {},
-  NEG_R: {},
-  NEG_M: {},
-  NEG_A: {}
-}
-
-// storage for the loaded Prospection lexicon
-var prospLex = {
-  PAST: {},
-  PRESENT: {},
-  FUTURE: {}
-}
-
-// storage for the loaded Affect / Intensity lexicon
-var affLex = {
-  AFFECT: {},
-  INTENSITY: {}
-}
+// storage for the loaded lexica
+var permaDLex = {}
+var permaMLex = {}
+var permaTLex = {}
+var permaSLex = {}
+var prospLex = {}
+var affLex = {}
+var ageLex = {}
+var genderLex = {}
 
 // keep track of which lexica are loaded into memory
 var lexStatus = {
@@ -70,17 +17,22 @@ var lexStatus = {
   'tLoaded': false, // is the permaV3_manual_tsp75 lexicon loaded?
   'sLoaded': false, // is the spanish lexicon loaded?
   'pLoaded': false, // is the prospection lexicon loaded?
-  'aLoaded': false  // is the affect lexicon loaded?
+  'aLoaded': false, // is the affect lexicon loaded?
+  'gLoaded': false, // is the gender lexicon loaded?
+  'eLoaded': false  // is the age lexicon loaded?
 }
 
 // cache elements
-var spanishCheck = document.getElementById('spanishCheck')
 var prospectCheck = document.getElementById('prospectCheck')
 var affectCheck = document.getElementById('affectCheck')
 var optimismCheck = document.getElementById('optimismCheck')
-var originalCheck = null
-var manualCheck = null
-var tsp75Check = null
+var ageCheck = document.getElementById('ageCheck')
+var genderCheck = document.getElementById('genderCheck')
+var minWeight = $('#minWeight')
+var lMin = $('#lMin')
+var lMax = $('#lMax')
+var permaSelect = $('#permaSelect')
+var encodeSelect = $('#encodeSelect')
 
 /* #################### *
  * Helper Functions     *
@@ -91,15 +43,25 @@ function isEven (n) {
   return n % 2 === 0
 }
 
-// array contains
-Array.prototype.containsArray = function(val) {
-  var hash = {};
-  for(var i=0; i<this.length; i++) {
-      hash[this[i]] = i;
+// multiple indexes
+Array.prototype.indexesOf = function (el) {
+  var idxs = []
+  for (var i = this.length - 1; i >= 0; i--) {
+    if (this[i] === el) {
+      idxs.unshift(i)
+    }
   }
-  return hash.hasOwnProperty(val);
+  return idxs
 }
 
+// array contains
+Array.prototype.containsArray = function (val) {
+  var hash = {}
+  for (var i = 0; i < this.length; i++) {
+    hash[this[i]] = i
+  }
+  return hash.hasOwnProperty(val)
+}
 
 /**
 * Destroy and recreate canvas elements to avoid problems with chart.js
@@ -109,29 +71,11 @@ function clearCanvases () {
   var c = document.getElementsByTagName('canvas')
   for (var i = 0; i < c.length; i++) {
     var x = c[i].parentNode
-    var canvas = document.createElement('canvas');
+    var canvas = document.createElement('canvas')
     canvas.id = c[i].id
     x.removeChild(c[i])
     x.append(canvas)
   }
-}
-
-/**
-* Convert array to string
-* @function arrToStr
-* @param  {array} arr {array to convert}
-* @return {string} {string output}
-*/
-function arrToStr (arr) {
-  var str = null
-  var words = []
-  $.each(arr, function (a, b) {
-    $.each(b, function (x, y) {
-      words.push(y)
-    })
-  })
-  str = words.join(' ')
-  return str
 }
 
 /**
@@ -158,11 +102,11 @@ function optToggle () {
 * @return {RegExp} {returns a new regular expression}
 */
 function fixRegExp (str, opts) {
-  opts = opts || 'gi'
-  var letterStart = /^[a-zA-Z]/gi
-  var letterEnd = /[a-zA-Z](?=\s|$)/gi
+  opts = opts || 'g'
+  var letterStart = new RegExp(/^[a-zA-Z]/, 'g')
+  var letterEnd = /[a-zA-Z](?=\s|$)/g
   // escape special characters first
-  str = str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') // eslint-disable-line
+  str = str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
   // if the string starts with a letter ...
   if (str.match(letterStart)) {
     // affix boundary modifiers to the start
@@ -181,27 +125,12 @@ function fixRegExp (str, opts) {
 }
 
 /**
-* @function tokenArray
-* @param  {string} str {input string}
-* @return {array} {an array of tokens}
-*/
-function tokenArray (str) {
-  var reg = new RegExp(/\b\S+\b/g)
-  var result = null
-  var tokenArray = []
-  while ((result = reg.exec(str))) {
-    tokenArray.push(result[0])
-  }
-  return tokenArray
-}
-
-/**
 * Generate a CSV from array and append download button
 * @function makeCSV
 * @param  {array} arr {array of tokens}
 */
 function makeCSV (arr) {
-  if (document.getElementById('alphaCheck').checked === true) {
+  if (document.getElementById('alphaCheck').checked) {
     arr.sort()
   }
   var lineArray = []
@@ -211,15 +140,7 @@ function makeCSV (arr) {
   })
   var csvContent = lineArray.join('\n')
   var encodedUri = encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
-  var t = $.now()
-  $('#buttonRow').append(
-    "<a class='btn btn-default btn-lg' id='csvButton' href='" +
-    encodedUri + "' download='perma_tokens_" + t + ".csv'>Save CSV</a>"
-  )
-    $('#buttonRowBlc').append(
-    "<a class='btn btn-default btn-block' id='csvButton' href='" +
-    encodedUri + "' download='perma_tokens_" + t + ".csv'>Save CSV</a>"
-  )
+  return encodedUri
 }
 
 /* #################### *
@@ -227,72 +148,73 @@ function makeCSV (arr) {
  * #################### */
 
 /**
-* Load and sort JSON files into the relevant lexicon object
-* @function sortLexicon
+* Load JSON files into the relevant lexicon object
+* @function loadLexicon
 * @param  {string} file   {JSON file name}
-* @param  {string} type   {'perma', 'prospection', or 'affect'}
 * @param  {object} obj    {the global lexicon object}
 * @param  {string} loader {relevant lexStatus item e.g. dLoaded}
 */
-function sortLexicon (file, type, obj, loader) {
+function loadLexicon (file, obj, loader) {
   var body = document.getElementsByTagName('body')[0]
-  // empty array to store loaded lexicon
-  var lex = {}
-  // full file name string
-  var fileName = 'json/' + type + '/' + file
-  // display the loading screen
   body.classList.add('loading')
-  // load JSON
-  $.getJSON(fileName, function (data) {
+  var lex = {}
+  $.getJSON(file, function (data) {
     lex = data
   }).then(function () {
-    var currentItem = 0
-    var lexLength = Object.keys(lex).length
-    var i = 0
-    for (var key in lex) {
-      if (lex.hasOwnProperty(key)) {
-        // increment curentItem count
-        currentItem++
-        // get the lexical category (e.g. "POS_P")
-        var cat = lex[key]['category']
-        // copy the item to the proper object
-        i = Object.keys(obj[cat]).length
-        obj[cat][i] = lex[key]
-        // if we've reached the end, proceed
-        if (currentItem === lexLength) {
-          // make it clear the lexica has been loaded
-          lexStatus[loader] = true
-          // remove the loading screen
-          body.classList.remove('loading')
-        }
-      }
-    }
+    $.each(lex, function (a, b) {
+      obj[a] = b
+    })
+    lexStatus[loader] = true
+    body.classList.remove('loading')
   })
 }
 
 /**
-* Find and sort matched terms against a lexicon
-* @function sortMatches
+* Tokenize a string into an array
+* @function tokenArray
 * @param  {string} str {input string}
-* @param  {object} obj {lexicon object}
-* @return {object} {object of matched terms and weights}
+* @return {array} {an array of tokens}
 */
-function sortMatches (str, obj) {
-  var matches = {}
-  if (typeof str !== 'string') str = str.toString()
+function tokenArray (str) {
+  // following regexps adapted from http://wwbp.org/downloads/public_data/happierfuntokenizing.zip
+  var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi')
+  var tokenArray = str.match(reg)
+  return tokenArray
+}
+
+/**
+* @function sortMatches
+* @param  {array} arr {array to match against lexicon}
+* @param  {object} obj {lexicon object}
+* @return {object} {object of matches}
+*/
+function sortMatches (arr, obj) {
+  var sortedMatches = {}
+  var min = -9999
   $.each(obj, function (a, b) {
-    var match = []
-    $.each(b, function (x, y) {
-      var term = y.term.toString()
-      var exp = fixRegExp(term, 'gi')
-      var matches = str.match(exp)
-      if (matches) {
-        match.push(matches, y.weight)
+    var matches = []
+    $.each(b, function (word, weight) {
+      if (permaSelect.val() === '4' || permaSelect.val() === '1') {
+        min = parseFloat(minWeight.val())
+      }
+      if (arr.indexOf(word) > -1 && weight > min) {
+        var reps = arr.indexesOf(word).length
+        var match = null
+        if (reps > 1) {
+          var words = []
+          for (var x = 0; x < reps; x++) {
+            words.push(word)
+          }
+          match = [words, weight]
+        } else {
+          match = [word, weight]
+        }
+        matches.push(match)
       }
     })
-    matches[a] = match
+    sortedMatches[a] = matches
   })
-  return matches
+  return sortedMatches
 }
 
 /**
@@ -302,42 +224,27 @@ function sortMatches (str, obj) {
 * @return {array} {array of words}
 */
 function getWords (obj, str) {
-  var store = []
-  var i = 0
+  var words = []
   $.each(obj, function (a, b) {
-    i += 1
     if (a.startsWith(str)) {
       $.each(b, function (x, y) {
-        if (isEven(x)) {
-          // we don't want to include duplicates across categoies or we
-          // might end up with 10x wordcount by accident
-          if (i > 1) {
-            if (!store.containsArray(y)) store.push(y)
-          } else {
-            store.push(y)
+        var word = null
+        var len = 1
+        if (Array.isArray(y[0])) {
+          word = y[0][0]
+          len = y[0].length
+        } else {
+          word = y[0]
+        }
+        if (words.indexOf(word) === -1) {
+          for (var i = 0; i < len; i++) {
+            words.push(word)
           }
         }
       })
     }
   })
-  return store
-}
-
-/**
-* Get count of matched items in a category
-* @function getCounts
-* @param  {object} obj {object to match against}
-* @param  {string} str {category key to match}
-* @return {number} {final count}
-*/
-function getCounts (obj, str) {
-  str = str || ''
-  var store = getWords(obj, str)
-  var num = 0
-  $.each(store, function (x, y) {
-    num += y.length
-  })
-  return Number(num)
+  return words
 }
 
 /**
@@ -351,12 +258,10 @@ function handleDuplicates (obj) {
   $.each(obj, function (a, b) {
     var list = []
     $.each(b, function (i, el) {
-      if (isEven(i)) {
-        if (el.length > 1) {
-          list.push(el[0] + '[' + el.length + ']') // i.e. "hello[2]"
-        } else {
-          list.push(el[0])                         // i.e. "hello"
-        }
+      if (Array.isArray(el[0])) {
+        list.push(el[0][0] + '[' + el.length + ']')
+      } else {
+        list.push(el[0])
       }
     })
     out[a] = list
@@ -365,31 +270,39 @@ function handleDuplicates (obj) {
 }
 
 /**
-* Calculate lexical values from array
+* Calculate lexical usage from array
 * @function calcLex
 * @param  {object} obj {lexicon matches to add}
 * @param  {number} wc  {total word count}
 * @param  {number} int {intercept value}
+* @param  {string} type {'perma' or otherwise}
 * @return {number} {the lexical value}
 */
-function calcLex (obj, wc, int) {
+function calcLex (obj, wc, int, type) {
   var num = 0
   var counts = []
   var weights = []
+  var enc = $('#encodeSelect').val()
   int = int || 0
+  type = type || ''
   $.each(obj, function (a, b) {
-    if (isEven(a)) {
-      // word frequency
-      counts.push(b.length)
+    if (Array.isArray(b[0])) {
+      counts.push(b[0].length)
     } else {
-      // word weight
-      weights.push(b)
+      counts.push(1)
     }
+    weights.push(b[1])
   })
   var sums = []
   $.each(counts, function (a, b) {
-    // (word freq / wordcount) * word weight
-    var sum = (counts[a] / wc) * weights[a]
+    var sum
+    if (enc === 'binary' && type !== 'x') {
+      // word 1 weight + word 2 weight etc...
+      sum = weights[a]
+    } else {
+      // (word freq / wordcount) * word weight
+      sum = (b / wc) * weights[a]
+    }
     sums.push(sum)
   })
   num = sums.reduce(function (a, b) { return a + b }, 0)
@@ -408,8 +321,13 @@ function main () {
   // check that there is actually text there
   if (textInput.length === 0) {
     body.classList.remove('loading')
-    return alert('Input box is empty!')
+    alert('Input box is empty!')
+    return false
   }
+
+  // remove any existing CSV buttons
+  $('#buttonRow').empty()
+  $('#buttonRowBlc').empty()
 
   // clear all the canvas elements
   clearCanvases()
@@ -420,40 +338,50 @@ function main () {
 
   // make the CSV file if selected
   if (document.getElementById('CSVCheck').checked) {
-    makeCSV(tokens)
+    var csv = makeCSV(tokens)
+    var t = $.now()
+    $('#buttonRow').append(
+      "<a class='btn btn-default btn-lg' id='csvButton' href='" +
+      csv + "' download='perma_tokens_" + t + ".csv'>Save CSV</a>"
+    )
+    $('#buttonRowBlc').append(
+      "<a class='btn btn-default btn-block' id='csvButton' href='" +
+      csv + "' download='perma_tokens_" + t + ".csv'>Save CSV</a>"
+    )
   }
 
   // generate our match objects
-  var PERMA = null
-  if (spanishCheck.checked) {
-    PERMA = sortMatches(textInput, permaSLex)
-  } else if (manualCheck.checked) {
-    PERMA = sortMatches(textInput, permaMLex)
-  } else if (tsp75Check.checked) {
-    PERMA = sortMatches(textInput, permaTLex)
+  var PERMA
+  var s = Number($('#permaSelect').val())
+  if (s === 4) {
+    PERMA = sortMatches(tokens, permaSLex)
+  } else if (s === 2) {
+    PERMA = sortMatches(tokens, permaMLex)
+  } else if (s === 3) {
+    PERMA = sortMatches(tokens, permaTLex)
   } else {
-    PERMA = sortMatches(textInput, permaDLex)
+    PERMA = sortMatches(tokens, permaDLex)
   }
 
   // calculate our important numbers
   var permaCounts = {}
-  permaCounts['POS_P'] = getCounts(PERMA, 'POS_P')
-  permaCounts['POS_E'] = getCounts(PERMA, 'POS_E')
-  permaCounts['POS_R'] = getCounts(PERMA, 'POS_R')
-  permaCounts['POS_M'] = getCounts(PERMA, 'POS_M')
-  permaCounts['POS_A'] = getCounts(PERMA, 'POS_A')
-  permaCounts['NEG_P'] = getCounts(PERMA, 'NEG_P')
-  permaCounts['NEG_E'] = getCounts(PERMA, 'NEG_E')
-  permaCounts['NEG_R'] = getCounts(PERMA, 'NEG_R')
-  permaCounts['NEG_M'] = getCounts(PERMA, 'NEG_M')
-  permaCounts['NEG_A'] = getCounts(PERMA, 'NEG_A')
-  permaCounts['POS_T'] = getCounts(PERMA, 'POS_')
-  permaCounts['NEG_T'] = getCounts(PERMA, 'NEG_')
-  permaCounts['TOTAL'] = getCounts(PERMA, '')
+  permaCounts['POS_P'] = getWords(PERMA, 'POS_P').length
+  permaCounts['POS_E'] = getWords(PERMA, 'POS_E').length
+  permaCounts['POS_R'] = getWords(PERMA, 'POS_R').length
+  permaCounts['POS_M'] = getWords(PERMA, 'POS_M').length
+  permaCounts['POS_A'] = getWords(PERMA, 'POS_A').length
+  permaCounts['NEG_P'] = getWords(PERMA, 'NEG_P').length
+  permaCounts['NEG_E'] = getWords(PERMA, 'NEG_E').length
+  permaCounts['NEG_R'] = getWords(PERMA, 'NEG_R').length
+  permaCounts['NEG_M'] = getWords(PERMA, 'NEG_M').length
+  permaCounts['NEG_A'] = getWords(PERMA, 'NEG_A').length
+  permaCounts['POS_T'] = getWords(PERMA, 'POS_').length
+  permaCounts['NEG_T'] = getWords(PERMA, 'NEG_').length
+  permaCounts['TOTAL'] = getWords(PERMA, '').length
 
   // intercept values
   var permaInt = null
-  if (spanishCheck.checked) {
+  if (s === 4) {
     permaInt = {
       POS_P: 2.675173871,
       POS_E: 2.055179283,
@@ -480,24 +408,19 @@ function main () {
       NEG_A: 0
     }
   }
-  var pastInt = (-0.649406376419)
-  var presInt = 0.236749577324
-  var futrInt = (-0.570547567181)
-  var affInt = 5.037104721
-  var intInt = 2.399762631
 
   // calculate lexical values
   var permaLV = {}
-  permaLV['POS_P'] = calcLex(PERMA['POS_P'], wordCount, permaInt['POS_P'])
-  permaLV['POS_E'] = calcLex(PERMA['POS_E'], wordCount, permaInt['POS_E'])
-  permaLV['POS_R'] = calcLex(PERMA['POS_R'], wordCount, permaInt['POS_R'])
-  permaLV['POS_M'] = calcLex(PERMA['POS_M'], wordCount, permaInt['POS_M'])
-  permaLV['POS_A'] = calcLex(PERMA['POS_A'], wordCount, permaInt['POS_A'])
-  permaLV['NEG_P'] = calcLex(PERMA['NEG_P'], wordCount, permaInt['NEG_P'])
-  permaLV['NEG_E'] = calcLex(PERMA['NEG_E'], wordCount, permaInt['NEG_E'])
-  permaLV['NEG_R'] = calcLex(PERMA['NEG_R'], wordCount, permaInt['NEG_R'])
-  permaLV['NEG_M'] = calcLex(PERMA['NEG_M'], wordCount, permaInt['NEG_M'])
-  permaLV['NEG_A'] = calcLex(PERMA['NEG_A'], wordCount, permaInt['NEG_A'])
+  permaLV['POS_P'] = calcLex(PERMA['POS_P'], wordCount, permaInt['POS_P'], 'perma')
+  permaLV['POS_E'] = calcLex(PERMA['POS_E'], wordCount, permaInt['POS_E'], 'perma')
+  permaLV['POS_R'] = calcLex(PERMA['POS_R'], wordCount, permaInt['POS_R'], 'perma')
+  permaLV['POS_M'] = calcLex(PERMA['POS_M'], wordCount, permaInt['POS_M'], 'perma')
+  permaLV['POS_A'] = calcLex(PERMA['POS_A'], wordCount, permaInt['POS_A'], 'perma')
+  permaLV['NEG_P'] = calcLex(PERMA['NEG_P'], wordCount, permaInt['NEG_P'], 'perma')
+  permaLV['NEG_E'] = calcLex(PERMA['NEG_E'], wordCount, permaInt['NEG_E'], 'perma')
+  permaLV['NEG_R'] = calcLex(PERMA['NEG_R'], wordCount, permaInt['NEG_R'], 'perma')
+  permaLV['NEG_M'] = calcLex(PERMA['NEG_M'], wordCount, permaInt['NEG_M'], 'perma')
+  permaLV['NEG_A'] = calcLex(PERMA['NEG_A'], wordCount, permaInt['NEG_A'], 'perma')
 
   // create printable array of words/tokens
   var permaPrint = handleDuplicates(PERMA)
@@ -508,14 +431,17 @@ function main () {
   var prospLV = {}
   var prospPrint = null
   if (prospectCheck.checked) {
-    PROSP = sortMatches(textInput, prospLex)
-    prospCounts['PAST'] = getCounts(PROSP, 'PAST')
-    prospCounts['PRESENT'] = getCounts(PROSP, 'PRESENT')
-    prospCounts['FUTURE'] = getCounts(PROSP, 'PAST')
-    prospCounts['TOTAL'] = getCounts(PROSP, '')
-    prospLV['PAST'] = calcLex(PROSP['PAST'], wordCount, pastInt)
-    prospLV['PRESENT'] = calcLex(PROSP['PRESENT'], wordCount, presInt)
-    prospLV['FUTURE'] = calcLex(PROSP['FUTURE'], wordCount, futrInt)
+    var pastInt = (-0.649406376419)
+    var presInt = 0.236749577324
+    var futrInt = (-0.570547567181)
+    PROSP = sortMatches(tokens, prospLex)
+    prospCounts['PAST'] = getWords(PROSP, 'PAST').length
+    prospCounts['PRESENT'] = getWords(PROSP, 'PRESENT').length
+    prospCounts['FUTURE'] = getWords(PROSP, 'PAST').length
+    prospCounts['TOTAL'] = getWords(PROSP, '').length
+    prospLV['PAST'] = calcLex(PROSP['PAST'], wordCount, pastInt, 'prosp')
+    prospLV['PRESENT'] = calcLex(PROSP['PRESENT'], wordCount, presInt, 'prosp')
+    prospLV['FUTURE'] = calcLex(PROSP['FUTURE'], wordCount, futrInt, 'prosp')
     prospPrint = handleDuplicates(PROSP)
   }
 
@@ -524,13 +450,15 @@ function main () {
   var affCounts = {}
   var affLV = {}
   var affPrint = null
+  var affInt = 5.037104721
   if (affectCheck.checked) {
-    AFF = sortMatches(textInput, affLex)
+    var intInt = 2.399762631
+    AFF = sortMatches(tokens, affLex)
     /* affect and intensity match the same words, only the weights are different
-     * so we only need to do 'getCounts' once, but calcLex needs both */
-    affCounts['AFFECT'] = getCounts(AFF, 'AFFECT')
-    affLV['AFFECT'] = calcLex(AFF['AFFECT'], wordCount, affInt)
-    affLV['INTENSITY'] = calcLex(AFF['INTENSITY'], wordCount, intInt)
+     * so we only need to do 'getWords' once, but calcLex needs both */
+    affCounts['AFFECT'] = getWords(AFF, 'AFFECT').length
+    affLV['AFFECT'] = calcLex(AFF['AFFECT'], wordCount, affInt, 'aff')
+    affLV['INTENSITY'] = calcLex(AFF['INTENSITY'], wordCount, intInt, 'aff')
     affPrint = handleDuplicates(AFF)
   }
 
@@ -541,11 +469,28 @@ function main () {
   var optPrint = null
   if (optimismCheck.checked) {
     var future = getWords(PROSP, 'FUTURE')
-    future = arrToStr(future)
     OPT = sortMatches(future, affLex)
-    optCount = getCounts(OPT, 'AFFECT')
-    optLV = calcLex(OPT['AFFECT'], wordCount, affInt)
+    optCount = getWords(OPT, 'AFFECT').length
+    optLV = calcLex(OPT['AFFECT'], wordCount, affInt, 'aff')
     optPrint = handleDuplicates(OPT)
+  }
+
+  // do the same for age
+  var AGE
+  var ageLV = {}
+  if (ageCheck.checked) {
+    var ageInt = 23.2188604687
+    AGE = sortMatches(tokens, ageLex)
+    ageLV = calcLex(AGE['AGE'], wordCount, ageInt, 'x')
+  }
+
+  // do the same for gender
+  var GENDER
+  var genderLV
+  if (genderCheck.checked) {
+    var genInt = (-0.06724152)
+    GENDER = sortMatches(tokens, genderLex)
+    genderLV = calcLex(GENDER['GENDER'], wordCount, genInt, 'x')
   }
 
   // make charts
@@ -616,45 +561,38 @@ function main () {
     type: 'pie',
     data: piedata
   })
-  var myRadarChart = new Chart(ctx2, { // eslint-disable-line
+  var myRadarChart = new Chart(ctx2, {
     type: 'radar',
     data: radardata
   })
-
-  // tokens are different than words ;)
-  var tag = 'word'
-  if ($('input[id=originalLex]:checked').length > 0) {
-    tag = 'token'
-  }
 
   // calculate ratio
   var PERMARatioStatement = ''
   if (permaCounts['POS_T'] === 0 || permaCounts['NEG_T'] === 0) {
     if (permaCounts['POS_T'] < permaCounts['NEG_T']) {
-      PERMARatioStatement = 'Of the matches, 100% were negative PERMA ' + tag + '.'
+      PERMARatioStatement = 'Of the matches, 100% were negative PERMA matches.'
     } else if (permaCounts['POS_T'] > permaCounts['NEG_T']) {
-      PERMARatioStatement = 'Of the matches, 100% were positive PERMA ' + tag + '.'
+      PERMARatioStatement = 'Of the matches, 100% were positive PERMA matches.'
     } else if (permaCounts['POS_T'] === permaCounts['NEG_T']) {
-      PERMARatioStatement = 'There were no PERMA ' + tag + ' in the input.'
+      PERMARatioStatement = 'There were no PERMA matches in the input.'
     }
   } else if (permaCounts['POS_T'] < permaCounts['NEG_T']) {
-    PERMARatioStatement = 'For every positive PERMA ' + tag + ' there are ' + ((permaCounts['NEG_T'] / permaCounts['POS_T']).toFixed(1)) + ' times as many negative PERMA ' + tag + 's.'
+    PERMARatioStatement = 'For every positive PERMA match there are ' + ((permaCounts['NEG_T'] / permaCounts['POS_T']).toFixed(3)) + ' times as many negative PERMA matches.'
   } else if (permaCounts['POS_T'] > permaCounts['NEG_T']) {
-    PERMARatioStatement = 'For every negative PERMA ' + tag + ' there are ' + ((permaCounts['POS_T'] / permaCounts['NEG_T']).toFixed(1)) + ' times as many positive PERMA ' + tag + 's.'
+    PERMARatioStatement = 'For every negative PERMA match there are ' + ((permaCounts['POS_T'] / permaCounts['NEG_T']).toFixed(3)) + ' times as many positive PERMA matches.'
   } else if (permaCounts['POS_T'] === permaCounts['NEG_T']) {
-    PERMARatioStatement = 'There are an equal number of positive and negative PERMA ' + tag + 's. 1:1.'
+    PERMARatioStatement = 'There are an equal number of positive and negative PERMA matches. 1:1.'
   }
 
   // display results
   // @todo: this is ugly, is there a better way to do this?
-  $('.tw').html(tag)
   $('#wordcount').html(wordCount)
   $('#matches').html(permaCounts['TOTAL'])
   $('#pmatches').html(permaCounts['POS_T'])
   $('#nmatches').html(permaCounts['NEG_T'])
   $('#ratio').html(PERMARatioStatement)
   if (permaCounts['TOTAL'] > 0) {
-    if (originalCheck.checked || spanishCheck.checked) {
+    if (s === 1 || s === 4) {
       $('#lex').removeClass('hidden')
       $('#ppl').html(JSON.stringify(permaLV['POS_P']))
       $('#pel').html(JSON.stringify(permaLV['POS_E']))
@@ -712,6 +650,17 @@ function main () {
     $('#optLex').html(optLV)
     $('#optPrint').html(optPrint.AFFECT.join(', '))
   }
+  if (ageCheck.checked) {
+    $('#ageRes').removeClass('hidden')
+    $('#predAge').html(ageLV.toFixed(2))
+  }
+  if (genderCheck.checked) {
+    $('#genRes').removeClass('hidden')
+    var g = 'Female'
+    if (genderLV < 0) g = 'Male'
+    $('#predGen').html(g)
+    $('#genLex').html(JSON.stringify(genderLV))
+  }
   $('#outputSection').removeClass('hidden')
 
   // remove loading screen
@@ -720,68 +669,59 @@ function main () {
 
 document.addEventListener('DOMContentLoaded', function loaded () {
   // load initial lexicon
-  sortLexicon('permaV3_dd.json', 'perma', permaDLex, 'dLoaded')
+  loadLexicon('json/perma/permaV3_dd.json', permaDLex, 'dLoaded')
 
-  // set proper radio button names
-  var radios = document.getElementsByName('permaRadio')
-  originalCheck = radios[0]
-  manualCheck = radios[1]
-  tsp75Check = radios[2]
+  // set min/max weights
+  minWeight.attr({'min': -0.37, 'max': 0.85}).val(-0.37)
+  lMin.html('-0.37')
+  lMax.html('0.85')
 
   // event listeners
   $('.startButton').on('click', main)
-  originalCheck.addEventListener('click', function () {
-    if (lexStatus['dLoaded'] === false) {
-      sortLexicon('permaV3_dd.json', 'perma', permaDLex, 'dLoaded')
+  permaSelect.on('change', function () {
+    var i = Number(permaSelect.val())
+    if (i === 1) {
+      if (lexStatus['dLoaded'] === false) {
+        loadLexicon('json/perma/permaV3_dd.json', permaDLex, 'dLoaded')
+      }
+      encodeSelect.prop('disabled', false)
+      minWeight.prop('disabled', false).attr({'min': -0.37, 'max': 0.85}).val(-0.37)
+    } else if (i === 2) {
+      if (lexStatus['mLoaded'] === false) {
+        loadLexicon('json/perma/permaV3_manual.json', permaMLex, 'mLoaded')
+      }
+      encodeSelect.prop('disabled', true)
+      minWeight.prop('disabled', true)
+    } else if (i === 3) {
+      if (lexStatus['tLoaded'] === false) {
+        loadLexicon('json/perma/permaV3_manual_tsp75.json', permaTLex, 'tLoaded')
+      }
+      encodeSelect.prop('disabled', true)
+      minWeight.prop('disabled', true)
+    } else if (i === 4) {
+      if (lexStatus['sLoaded'] === false) {
+        loadLexicon('json/perma/dd_spermaV3.json', permaSLex, 'sLoaded')
+      }
+      encodeSelect.prop('disabled', false)
+      minWeight.prop('disabled', false).attr({'min': -0.85, 'max': 3.32}).val(-0.85)
+    } else {
+      console.error('#permaSelect: invalid selection. Defaulting to 1.')
+      permaSelect.val('1')
     }
-  }, false)
-  manualCheck.addEventListener('click', function () {
-    if (lexStatus['mLoaded'] === false) {
-      sortLexicon('permaV3_manual.json', 'perma', permaMLex, 'mLoaded')
-    }
-  }, false)
-  tsp75Check.addEventListener('click', function () {
-    if (lexStatus['tLoaded'] === false) {
-      sortLexicon('permaV3_manual_tsp75.json', 'perma', permaTLex, 'tLoaded')
-    }
-  }, false)
+    lMin.html(minWeight.attr('min'))
+    lMax.html(minWeight.attr('max'))
+  })
   prospectCheck.addEventListener('click', function () {
     if (prospectCheck.checked && lexStatus['pLoaded'] === false) {
-      sortLexicon('prospection.json', 'prospection', prospLex, 'pLoaded')
+      loadLexicon('json/prospection/prospection.json', prospLex, 'pLoaded')
     }
     optToggle()
   }, false)
   affectCheck.addEventListener('click', function () {
     if (affectCheck.checked && lexStatus['aLoaded'] === false) {
-      sortLexicon('affect.json', 'affect', affLex, 'aLoaded')
+      loadLexicon('json/affect/affect.json', affLex, 'aLoaded')
     }
     optToggle()
-  }, false)
-  spanishCheck.addEventListener('click', function () {
-    var i = 0
-    if (spanishCheck.checked) {
-      if (lexStatus['sLoaded'] === false) {
-        sortLexicon('dd_spermaV3.json', 'perma', permaSLex, 'sLoaded')
-      }
-      for (i = 0; i < radios.length; i++) {
-        radios[i].disabled = true
-        radios[i].checked = false
-      }
-    }
-  }, false)
-  var englishCheck = document.getElementById('englishCheck')
-  englishCheck.addEventListener('click', function () {
-    var i = 0
-    if (englishCheck.checked) {
-      if (lexStatus['mLoaded'] === false) {
-        sortLexicon('permaV3_manual.json', 'perma', permaMLex, 'mLoaded')
-      }
-      for (i = 0; i < radios.length; i++) {
-        radios[i].disabled = false
-        radios[i].checked = false
-      }
-      radios[0].checked = true
-    }
   }, false)
   document.getElementById('CSVCheck').addEventListener('click', function () {
     var alphaCSV = document.getElementById('alphaCSV')
@@ -794,13 +734,19 @@ document.addEventListener('DOMContentLoaded', function loaded () {
       alphaCSVCheck.disabled = true
     }
   }, false)
+  ageCheck.addEventListener('click', function () {
+    if (ageCheck.checked && lexStatus['eLoaded'] === false) {
+      loadLexicon('json/age/age.json', ageLex, 'eLoaded')
+    }
+  }, false)
+  genderCheck.addEventListener('click', function () {
+    if (genderCheck.checked && lexStatus['gLoaded'] === false) {
+      loadLexicon('json/gender/gender.json', genderLex, 'gLoaded')
+    }
+  }, false)
 
-  // activate tooltips
-  $('[data-toggle="tooltip"]').tooltip()
-
-  // global chart options
-  Chart.defaults.global.responsive = false
-  Chart.defaults.global.fullWidth = true
+  // activate popovers
+  $('[data-toggle="popover"]').popover()
 
   /*
   * IE10 viewport hack for Surface/desktop Windows 8 bug
