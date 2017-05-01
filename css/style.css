@@ -2,8 +2,8 @@
 @-o-viewport { width: device-width; }
 @viewport { width: device-width; }
 html, body {
-  -webkit-font-smoothing:      antialiased;
-  -moz-osx-font-smoothing:     grayscale;
+   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 button {
   -ms-touch-action: manipulation;
@@ -11,7 +11,7 @@ button {
 }
 body.js .jswarning {display: none !important}
 body.loading {overflow: hidden;}
-body.loading main.container {filter: blur(3px);}
+body.loading .blur {filter: blur(3px);}
 body.loading .modal {display: block;}
 h2 {margin-top: 5px;}
 textarea { height: auto; }
@@ -25,6 +25,15 @@ textarea { height: auto; }
     width:      100%;
     background: #fff;
     background: rgba(255, 255, 255, .8);
+}
+hr {
+    margin: 20px auto;
+    text-align: center;
+    width: 80%;
+}
+.iFix {
+  display: inline;
+  padding: 0;
 }
 @media print {
   a:after {content:" (" attr(href) ") ";font-size:0.8em;font-weight:normal;}
