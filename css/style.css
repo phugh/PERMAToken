@@ -13,8 +13,20 @@ body.js .jswarning {display: none !important}
 body.loading {overflow: hidden;}
 body.loading .blur {filter: blur(3px);}
 body.loading .modal {display: block;}
+.chart {
+  width: 400px;
+  height: 400px;
+}
 h2 {margin-top: 5px;}
-textarea { height: auto; }
+hr {
+    margin: 20px auto;
+    text-align: center;
+    width: 80%;
+}
+.iFix {
+  display: inline;
+  padding: 0;
+}
 .modal {
     display:    none;
     position:   fixed;
@@ -26,15 +38,7 @@ textarea { height: auto; }
     background: #fff;
     background: rgba(255, 255, 255, .8);
 }
-hr {
-    margin: 20px auto;
-    text-align: center;
-    width: 80%;
-}
-.iFix {
-  display: inline;
-  padding: 0;
-}
+textarea { height: auto; }
 @media print {
   a:after {content:" (" attr(href) ") ";font-size:0.8em;font-weight:normal;}
   a {color: #000; text-decoration: none; font-weight: normal;}

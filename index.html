@@ -27,37 +27,33 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-        <link rel='stylesheet' href='css/style.css'>
+        <link rel='stylesheet' href='css/style.min.css'>
     </head>
     <body class='loading no-js'>
+        <script>document.body.className = document.body.className.replace("no-js","js");</script>
+
         <div id="blur">
 
-        <script>document.body.className = document.body.className.replace("no-js","js");</script>
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
                     <span class="navbar-brand">Positive Psychology Text Analyser [Beta]</span>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="http://www.phugh.es" target="_blank">by P. Hughes</a></li>
-                    </ul>
+                    <a href="http://www.phugh.es" target="_blank" class="navbar-text">by P. Hughes</a>
                 </div>
             </div>
         </nav>
 
         <main class="container">
-
             <!--googleoff: index-->
             <!--[if lte IE 9]>
                 <div class="alert alert-danger robots-nocontent">
                     <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to use this website and improve your experience and security.</p>
                 </div>
             <![endif]-->
-            <div class="browserupgrade jswarning robots-nocontent">
-                <div class="alert alert-danger">
-                    <p><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Javascript is disabled in your browser. To view this page, please enable javascript.</p>
-                </div>
+            <div class="alert alert-danger browserupgrade jswarning robots-nocontent" role="alert">
+                <p><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Javascript is disabled in your browser. To view this page, please enable javascript.</p>
             </div>
             <div class="alert alert-warning robots-nocontent" role="alert">
                 <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check and double-check the results you receive here, the creator does not accept responsibility for inaccurate results.</p>
@@ -76,7 +72,7 @@
                     <p>&nbsp;</p>
                     <h3>Welcome</h3>
                     <p>The Positive Psychology Text Analyser allows you to easily compare any text to the <a href="http://www.wwbp.org" target="_blank">World Wellbeing Project's</a> PERMA lexica in English &#x1F1EC;&#x1F1E7; / &#x1F1FA;&#x1F1F8; or <span lang="es">en Español &#x1F1EA;&#x1F1F8;</span>, as well as many of their other lexica. Simply copy any text (transcripts, essays, etc.) into the textbox below, choose any additional options, and press Start!</p>
-                    <p>It can also output your text as a tokenized CSV file. The tokenizer may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenizing if you wish to use that feature.</p>
+                    <p>It can also output your text as a tokenised CSV file. The tokeniser may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenising if you wish to use that feature.</p>
                     <hr>
                     <div class="form-group">
                         <label for="textInput">1 - Paste text to be analysed here:</label>
@@ -128,7 +124,7 @@
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline ">
-                                    <input type="checkbox" id="bigFiveCheck"> Analyse "Big Five"
+                                    <input type="checkbox" id="bigFiveCheck"> Analyse "Big Five" Personality Traits
                                 </label>
                                 <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses the so called 'Big Five' personality traits: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </div>
@@ -149,8 +145,13 @@
                         <div class="row panel-body">
                             <div class="col-xs-12 col-md-4">
                                 <label for="minWeight">Minimum Weight:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches at a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
-                                <input type="number" id="minWeight" class="form-control" step="0.01" value="-0.9">
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <input type="number" id="minWeight" class="form-control" step="0.01" value="-0.38" min="-0.38">
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <label for="maxWeight">Maximum Weight:</label>
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <input type="number" id="maxWeight" class="form-control" step="0.01" value="0.86" max="0.86">
                             </div>
                         </div>
                     </div>
@@ -213,16 +214,16 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th> </th>
-                                            <th>Total</th>
+                                            <th>Total Matches<a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Total might not be equal to (positive matches + negative matches) as words can match in both positive and negative categories."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></th>
+                                            <th>Total Unmatched (Neutral Tokens)</th>
                                             <th>Positive</th>
                                             <th>Negative</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Matches</td>
                                             <td><span id="matches"></span></td>
+                                            <td><span id="umatches"></span></td>
                                             <td><span id="pmatches"></span></td>
                                             <td><span id="nmatches"></span></td>
                                         </tr>
@@ -234,10 +235,10 @@
                                     <p>&nbsp;</p>
                                     <div id="permaCharts" class="row">
                                         <div class="col-xs-12 col-md-6">
-                                            <canvas id="permaPie" width="400" height="400"></canvas>
+                                            <canvas id="permaPie" class="chart" width="400" height="400"></canvas>
                                         </div>
                                         <div id="permaRadar" class="col-xs-12 col-md-6 hidden">
-                                            <canvas id="permaRad" width="400" height="400"></canvas>
+                                            <canvas id="permaRad" class="chart" width="400" height="400"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -245,35 +246,49 @@
                                 <table id="lex" class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Category</th>
-                                            <th>Positive</th>
-                                            <th>Negative</th>
+                                            <th>Category (+ Positive / - Negative)</th>
+                                            <th>Lexical Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Emotion</td>
+                                            <td>Positive Emotion (+)</td>
                                             <td><span id="ppl"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Negative Emotion (-)</td>
                                             <td><span id="npl"></span></td>
                                         </tr>
                                         <tr>
-                                            <td>Engagement</td>
+                                            <td>Engagement (+)</td>
                                             <td><span id="pel"></span></td>
+                                        </tr>
+                                         <tr>
+                                            <td>Disngagement (-)</td>
                                             <td><span id="nel"></span></td>
                                         </tr>
                                         <tr>
-                                            <td>Relationships</td>
+                                            <td>Positive Relationships (+)</td>
                                             <td><span id="prl"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Negative Relationships (-)</td>
                                             <td><span id="nrl"></span></td>
                                         </tr>
                                         <tr>
-                                            <td>Meaning</td>
+                                            <td>Meaning (+)</td>
                                             <td><span id="pml"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lack of Meaning (-)</td>
                                             <td><span id="nml"></span></td>
                                         </tr>
                                         <tr>
-                                            <td>Accomplishment</td>
+                                            <td>Accomplishment (+)</td>
                                             <td><span id="pal"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lack of Accomplishment (-)</td>
                                             <td><span id="nal"></span></td>
                                         </tr>
                                     </tbody>
@@ -327,7 +342,7 @@
                                     <thead>
                                         <tr>
                                             <th>Temporal Orientation</th>
-                                            <th>Lex Value</th>
+                                            <th>Lexical Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -346,10 +361,10 @@
                                     </table>
                                     <div class="row hidden">
                                         <div class="col-xs-12 col-md-6">
-                                            <canvas id="pdonut" width="400" height="400"></canvas>
+                                            <canvas id="pdonut" class="chart" width="400" height="400"></canvas>
                                         </div>
                                         <div class="col-xs-12 col-md-6">
-                                            <canvas id="pspider" width="400" height="400"></canvas>
+                                            <canvas id="pspider" class="chart" width="400" height="400"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -384,7 +399,7 @@
                                         <p><strong>Scale:</strong> Affect: 1 = very negative, 5 = neutral, 9 = very positive. Intensity: 1 = netural, 9 = high.</p>
                                         <div id="affCharts" class="row">
                                             <div class="col-xs-12 col-md-6">
-                                                <canvas id="affBubble" width="400" height="400"></canvas>
+                                                <canvas id="affBubble" class="chart" width="400" height="400"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -392,7 +407,7 @@
                                     <thead>
                                         <tr>
                                             <th>A/I</th>
-                                            <th>Lex</th>
+                                            <th>Lexical Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -467,7 +482,7 @@
                                     <thead>
                                         <tr>
                                             <th>Trait</th>
-                                            <th>Lex</th>
+                                            <th>Lexical Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -495,7 +510,7 @@
                                     <p>&nbsp;</p>
                                     <div id="fiveCharts" class="row">
                                         <div class="col-xs-12 col-md-6">
-                                            <canvas id="fiveRadar" width="400" height="400"></canvas>
+                                            <canvas id="fiveRadar" class="chart" width="400" height="400"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -543,7 +558,7 @@
                                 </div>
                                 <div id="res12" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h12">
                                     <div class="panel-body container">
-                                        <p><strong>Predicted gender: </strong><span id="predGen"></span> (Lex: <span id="genLex"></span>).</p>
+                                        <p><strong>Predicted gender: </strong><span id="predGen"></span> (Lexical value: <span id="genLex"></span>).</p>
                                     </div>
                                 </div>
                             </div>
@@ -589,11 +604,11 @@
             </div>
         </div>
 
-        </div> <!-- enf of blur -->
+        </div> <!-- end of blur -->
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-        <Script src="js/main.js"></script>
+        <script defer src="js/main.min.js"></script>
     </body>
 </html>

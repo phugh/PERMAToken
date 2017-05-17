@@ -31,6 +31,7 @@ var bigFiveCheck = document.getElementById('bigFiveCheck')
 var ageCheck = document.getElementById('ageCheck')
 var genderCheck = document.getElementById('genderCheck')
 var minWeight = document.getElementById('minWeight')
+var maxWeight = document.getElementById('maxWeight')
 var permaSelect = document.getElementById('permaSelect')
 var pieChart
 var radarChart
@@ -42,11 +43,10 @@ var affChart
  * #################### */
 
 // multiple indexes
-Array.prototype.indexesOf = function (el) {
+Array.prototype.indexesOf = function (el) { // eslint-disable-line
   var idxs = []
-  var i
-  var len = this.length
-  for (i = len - 1; i >= 0; i--) {
+  var i = this.length - 1
+  for (i; i >= 0; i--) {
     if (this[i] === el) {
       idxs.unshift(i)
     }
@@ -55,11 +55,11 @@ Array.prototype.indexesOf = function (el) {
 }
 
 // array contains
-Array.prototype.containsArray = function (val) {
+Array.prototype.containsArray = function (val) { // eslint-disable-line
   var hash = {}
-  var i
+  var i = 0
   var len = this.length
-  for (i = 0; i < len; i++) {
+  for (i; i < len; i++) {
     hash[this[i]] = i
   }
   return hash.hasOwnProperty(val)
@@ -68,17 +68,17 @@ Array.prototype.containsArray = function (val) {
 /**
 * Generate a CSV URI from an array
 * @function makeCSV
-* @param {array} arr {array of tokens}
+* @param {Array} arr {array of tokens}
 */
 function makeCSV (arr) {
-  if (document.getElementById('alphaCheck').checked) {
-    arr.sort()
-  }
+  if (document.getElementById('alphaCheck').checked) arr.sort()
   var lineArray = []
-  arr.forEach(function (word, index) {
-    word = word.replace(/'/g, '^')
+  var word, i
+  var len = arr.length
+  for (i = 0; i < len; i++) {
+    word = arr[i].replace(/'/g, '^')
     lineArray.push(word)
-  })
+  }
   var csvContent = lineArray.join('\n')
   var encodedUri = encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
   return encodedUri
@@ -93,17 +93,23 @@ function makeCSV (arr) {
 * @function clearCanvases
 */
 function clearCanvases () {
-  var c = document.getElementsByTagName('canvas')
-  var len = c.length
-  var i
+  // destroy previous charts.js bits
   if (pieChart != null) pieChart.destroy()
   if (radarChart != null) radarChart.destroy()
   if (fiveChart != null) fiveChart.destroy()
   if (affChart != null) affChart.destroy()
-  for (i = 0; i < len; i++) {
+  // remove and repace canvas elements
+  var c = document.getElementsByTagName('canvas')
+  var len = c.length
+  var i = 0
+  for (i; i < len; i++) {
     var x = c[i].parentNode
     var canvas = document.createElement('canvas')
     canvas.id = c[i].id
+    canvas.width = 400
+    canvas.height = 400
+    canvas.style.width = '400px'
+    canvas.style.height = '400px'
     x.removeChild(c[i])
     x.appendChild(canvas)
   }
@@ -133,7 +139,7 @@ function optToggle () {
 * Load JSON files into the relevant lexicon object
 * @function loadLexicon
 * @param  {string} file   {JSON file name}
-* @param  {object} obj    {the global lexicon object}
+* @param  {Object} obj    {the global lexicon object}
 * @param  {string} loader {relevant lexStatus item e.g. dLoaded}
 */
 function loadLexicon (file, obj, loader) {
@@ -158,14 +164,14 @@ function loadLexicon (file, obj, loader) {
       sort(lex)
     } else {
       body.classList.remove('loading')
-      alert('There was an error loading the lexicon! Please refresh the page and try again.')
+      window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
       return false
     }
   }
 
   request.onerror = function () {
     body.classList.remove('loading')
-    alert('There was an error loading the lexicon! Please refresh the page and try again.')
+    window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
     return false
   }
 
@@ -173,43 +179,52 @@ function loadLexicon (file, obj, loader) {
 }
 
 /**
-* Tokenize a string into an array
-* @function tokenize
+* tokenise a string into an array
+* @function tokenise
 * @param  {string} str {input string}
-* @return {array} {an array of tokens}
+* @return {Array} {an array of tokens}
 */
-function tokenize (str) {
+function tokenise (str) {
   // adapted from http://wwbp.org/downloads/public_data/happierfuntokenizing.zip
-  var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi')
+  var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi') // eslint-disable-line
   var tokens = str.match(reg)
   return tokens
 }
 
 /**
 * @function sortMatches
-* @param  {array} arr {array to match against lexicon}
-* @param  {object} obj {lexicon object}
-* @return {object} {object of matches}
+* @param  {Array} arr {array to match against lexicon}
+* @param  {Object} obj {lexicon object}
+* @return {Object} {object of matches}
 */
 function sortMatches (arr, obj) {
-  var sortedMatches = {
-    'counts': {}
-  }
+  var sortedMatches = {'counts': {}}
+
+  // sort out min/max thresholds
+  var dd = false
+  var min = -999
+  var max = 999
   var sel = permaSelect.value
-  var min = parseFloat(minWeight.value)
+  if (sel === '1' || sel === '4') {
+    dd = true
+    min = parseFloat(minWeight.value)
+    max = parseFloat(maxWeight.value)
+  }
+
   var cat // category
   for (cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue
     var matches = []
     var key // word
     var data = obj[cat]
+    var permaCat = (cat.startsWith('POS') || cat.startsWith('NEG'))
     var i = 0
     for (key in data) {
       if (!data.hasOwnProperty(key)) continue
       var weight = data[key]
-      if (sel === '3' || sel === '2' && cat.startsWith('POS') || cat.startsWith('NEG')) min = -999
-      if (arr.indexOf(key) > -1 && weight > min) {
-        var match
+      if (arr.indexOf(key) > -1) {
+        if ((permaCat && dd) && (weight < min || weight > max)) continue
+        var match = []
         var reps = arr.indexesOf(key).length
         i += reps
         if (reps > 1) {
@@ -218,9 +233,9 @@ function sortMatches (arr, obj) {
           for (x = 0; x < reps; x++) {
             words.push(key)
           }
-          match = [words, weight]
+          match.push([words, weight])
         } else {
-          match = [key, weight]
+          match.push([key, weight])
         }
         matches.push(match)
       }
@@ -233,9 +248,9 @@ function sortMatches (arr, obj) {
 
 /**
 * @function getWords
-* @param  {object} obj {lexicon matches object}
+* @param  {Object} obj {lexicon matches object}
 * @param  {string} str {optional object key to match}
-* @return {array} {array of words}
+* @return {Array} {array of words}
 */
 function getWords (obj, str) {
   var words = []
@@ -247,11 +262,11 @@ function getWords (obj, str) {
       var data = obj[cat]
       for (key in data) {
         if (!data.hasOwnProperty(key)) continue
-        var item = data[key][0]
+        var item = data[key][0][0]
         var len = 0
         if (Array.isArray(item)) {
           len = item.length
-          item = data[key][0][0]
+          item = data[key][0][0][0]
         }
         if (words.indexOf(item) === -1) {
           if (len === 0) {
@@ -272,20 +287,20 @@ function getWords (obj, str) {
 /**
 * Remove duplicates by appending count to item
 * @function handleDuplicates
-* @param  {object} obj {input object}
-* @return {object} {output object}
+* @param  {Object} obj {input object}
+* @return {Object} {output object}
 */
 function handleDuplicates (obj) {
   var out = {}
   var cat
   for (cat in obj) {
-    if (!obj.hasOwnProperty(cat)) continue
+    if (!obj.hasOwnProperty(cat) || cat === 'counts') continue
     var list = []
     var key
     var data = obj[cat]
     for (key in data) {
       if (!data.hasOwnProperty(key)) continue
-      var el = data[key][0]
+      var el = data[key][0][0]
       if (Array.isArray(el)) {
         list.push(el[0] + '[' + el.length + ']')
       } else {
@@ -301,7 +316,7 @@ function handleDuplicates (obj) {
 /**
 * Calculate lexical usage from array
 * @function calcLex
-* @param  {object} obj {lexicon matches to add}
+* @param  {Object} obj {lexicon matches to add}
 * @param  {number} wc  {total word count}
 * @param  {number} int {intercept value}
 * @param  {string} enc {encoding type}
@@ -316,8 +331,8 @@ function calcLex (obj, wc, int, enc) {
   var cat
   for (cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue
-    var word = obj[cat][0]
-    var weight = obj[cat][1]
+    var word = obj[cat][0][0]
+    var weight = obj[cat][0][1]
     if (Array.isArray(word)) {
       counts.push(word.length)
     } else {
@@ -328,16 +343,19 @@ function calcLex (obj, wc, int, enc) {
 
   var lex = 0
   var len = counts.length
-  var i
-  for (i = 0; i < len; i++) {
+  var i = 0
+  for (i; i < len; i++) {
+    var weightNum = Number(weights[i])
     if (enc === 'freq') {
-      lex += (counts[i] / wc) * weights[i]
+      var count = Number(counts[i])
+      var words = Number(wc)
+      lex += ((count / words) * weightNum)
     } else {
-      lex += weights[i]
+      lex += weightNum
     }
   }
-  lex = lex + int
-  return lex
+  lex += Number(int)
+  return Number(lex)
 }
 
 function main () {
@@ -351,7 +369,7 @@ function main () {
   // check that there is actually text there
   if (text.length === 0) {
     body.classList.remove('loading')
-    alert('Input box is empty!')
+    window.alert('Input box is empty!')
     return false
   }
 
@@ -363,7 +381,7 @@ function main () {
   clearCanvases()
 
   // create array of individual words
-  var tokens = tokenize(text)
+  var tokens = tokenise(text)
   var wordCount = tokens.length
 
   // make the CSV file if selected
@@ -386,7 +404,7 @@ function main () {
   }
 
   // generate our match objects
-  var PERMA
+  var PERMA = {}
   var s = permaSelect.value
   if (s === '4') {
     PERMA = sortMatches(tokens, permaSLex)
@@ -404,18 +422,7 @@ function main () {
   PERMA.counts.TOTAL = getWords(PERMA, '').length
 
   // intercept values
-  var permaInt = {
-    POS_P: 0,
-    POS_E: 0,
-    POS_R: 0,
-    POS_M: 0,
-    POS_A: 0,
-    NEG_P: 0,
-    NEG_E: 0,
-    NEG_R: 0,
-    NEG_M: 0,
-    NEG_A: 0
-  }
+  var permaInt
   if (s === '4') {
     permaInt = {
       POS_P: 2.675173871,
@@ -428,6 +435,19 @@ function main () {
       NEG_R: 1.782788984,
       NEG_M: 1.52890284,
       NEG_A: 2.482131179
+    }
+  } else {
+    permaInt = {
+      POS_P: 0,
+      POS_E: 0,
+      POS_R: 0,
+      POS_M: 0,
+      POS_A: 0,
+      NEG_P: 0,
+      NEG_E: 0,
+      NEG_R: 0,
+      NEG_M: 0,
+      NEG_A: 0
     }
   }
 
@@ -448,7 +468,7 @@ function main () {
   var permaPrint = handleDuplicates(PERMA)
 
   // do the same for prospection
-  var PROSP
+  var PROSP = {}
   var prospLV = {}
   var prospPrint
   if (prospectCheck.checked) {
@@ -461,7 +481,7 @@ function main () {
   }
 
   // do the same for affect
-  var AFF
+  var AFF = {}
   var affLV = {}
   var affPrint
   if (affectCheck.checked) {
@@ -497,7 +517,7 @@ function main () {
           ticks: {
             max: 9,
             min: 1,
-            stepSize: 0.5
+            stepSize: 1
           },
           scaleLabel: {
             display: true,
@@ -508,7 +528,7 @@ function main () {
           ticks: {
             max: 9,
             min: 1,
-            stepSize: 0.5
+            stepSize: 1
           },
           scaleLabel: {
             display: true,
@@ -527,7 +547,7 @@ function main () {
   }
 
   // do the same for optimism
-  var OPT
+  var OPT = {}
   var optLV = {}
   var optPrint
   if (optimismCheck.checked) {
@@ -538,7 +558,7 @@ function main () {
   }
 
   // do the same for big five
-  var FIVE
+  var FIVE = {}
   var fiveLV = {}
   var fivePrint
   if (bigFiveCheck.checked) {
@@ -562,13 +582,12 @@ function main () {
       datasets: [
         {
           label: 'Big Five Personality Traits',
-          backgroundColor: [
-            '#FF6384',
-            '#4BC0C0',
-            '#FFCE56',
-            '#E7E9ED',
-            '#36A2EB'
-          ],
+          backgroundColor: 'rgba(119, 221, 119,0.2)',
+          borderColor: '#77dd77',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#77dd77',
           data: [
             fiveLV.O,
             fiveLV.C,
@@ -576,32 +595,47 @@ function main () {
             fiveLV.A,
             fiveLV.N
           ]
+        },
+        {
+          label: 'Zero',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#000',
+          pointBackgroundColor: 'rgba(0,0,0,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#000',
+          data: [0, 0, 0, 0, 0]
         }
       ]
     }
 
     var ctx3 = document.getElementById('fiveRadar').getContext('2d')
     fiveChart = new Chart(ctx3, {
-      type: 'polarArea',
+      type: 'radar',
       data: fiveData
     })
   }
 
   // do the same for age
-  var AGE
+  var AGE = {}
   var ageLV = {}
   if (ageCheck.checked) {
     AGE = sortMatches(tokens, ageLex)
-    ageLV = calcLex(AGE.AGE, wordCount, 23.2188604687, 'freq')
+    ageLV = calcLex(AGE.AGE, wordCount, 23.2188604687, 'freq').toFixed(2)
   }
 
   // do the same for gender
-  var GENDER
-  var genderLV
+  var GENDER = {}
+  var genderLV = {}
   if (genderCheck.checked) {
     GENDER = sortMatches(tokens, genderLex)
     genderLV = calcLex(GENDER.GENDER, wordCount, (-0.06724152), 'freq').toFixed(3)
   }
+
+  // calculate PERMA percentages
+  var neutralWords = (wordCount - PERMA.counts.TOTAL)
+  var matchCent = ((PERMA.counts.TOTAL / wordCount) * 100).toFixed(2)
+  var neutralCent = ((neutralWords / wordCount) * 100).toFixed(2)
 
   // make charts
   var ctx1 = document.getElementById('permaPie').getContext('2d')
@@ -613,7 +647,7 @@ function main () {
     ],
     datasets: [
       {
-        data: [PERMA.counts['POS_T'], PERMA.counts['NEG_T']],
+        data: [PERMA.counts.POS_T, PERMA.counts.NEG_T],
         backgroundColor: [
           '#77dd77',
           '#FF6384'
@@ -634,7 +668,7 @@ function main () {
     ],
     datasets: [
       {
-        label: 'Positive PERMA items',
+        label: 'Positive',
         backgroundColor: 'rgba(119, 221, 119,0.2)',
         borderColor: '#77dd77',
         pointBackgroundColor: 'rgba(179,181,198,1)',
@@ -642,15 +676,15 @@ function main () {
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: '#77dd77',
         data: [
-          permaLV['POS_P'],
-          permaLV['POS_E'],
-          permaLV['POS_R'],
-          permaLV['POS_M'],
-          permaLV['POS_A']
+          permaLV.POS_P,
+          permaLV.POS_E,
+          permaLV.POS_R,
+          permaLV.POS_M,
+          permaLV.POS_A
         ]
       },
       {
-        label: 'Negative PERMA items',
+        label: 'Negative',
         backgroundColor: 'rgba(255,99,132,0.2)',
         borderColor: 'rgba(255,99,132,1)',
         pointBackgroundColor: 'rgba(255,99,132,1)',
@@ -658,12 +692,22 @@ function main () {
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(255,99,132,1)',
         data: [
-          permaLV['NEG_P'],
-          permaLV['NEG_E'],
-          permaLV['NEG_R'],
-          permaLV['NEG_M'],
-          permaLV['NEG_A']
+          permaLV.NEG_P,
+          permaLV.NEG_E,
+          permaLV.NEG_R,
+          permaLV.NEG_M,
+          permaLV.NEG_A
         ]
+      },
+      {
+        label: 'Zero',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderColor: '#000',
+        pointBackgroundColor: 'rgba(0,0,0,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#000',
+        data: [0, 0, 0, 0, 0]
       }
     ]
   }
@@ -701,9 +745,10 @@ function main () {
   // display results
   // @todo: this is ugly, is there a better way to do this?
   document.getElementById('wordcount').textContent = wordCount
-  document.getElementById('matches').textContent = PERMA.counts.TOTAL
+  document.getElementById('matches').textContent = PERMA.counts.TOTAL + ' (' + matchCent + '%)'
   document.getElementById('pmatches').textContent = PERMA.counts.POS_T
   document.getElementById('nmatches').textContent = PERMA.counts.NEG_T
+  document.getElementById('umatches').textContent = neutralWords + ' (' + neutralCent + '%)'
   document.getElementById('ratio').textContent = PERMARatioStatement
   if (s === '1' || s === '4') {
     document.getElementById('lex').classList.remove('hidden')
@@ -760,7 +805,7 @@ function main () {
   }
   if (ageCheck.checked) {
     document.getElementById('ageRes').classList.remove('hidden')
-    document.getElementById('predAge').textContent = ageLV.toFixed(2)
+    document.getElementById('predAge').textContent = ageLV
   }
   if (genderCheck.checked) {
     document.getElementById('genRes').classList.remove('hidden')
@@ -814,38 +859,53 @@ document.addEventListener('DOMContentLoaded', function loaded () {
       if (lexStatus['dLoaded'] === false) {
         loadLexicon('json/perma/permaV3_dd.json', permaDLex, 'dLoaded')
       }
+      minWeight.disabled = false
+      maxWeight.disabled = false
+      minWeight.value = -0.38
+      maxWeight.value = 0.86
+      minWeight.min = -0.38
+      maxWeight.max = 0.86
     } else if (i === '2') {
       if (lexStatus['mLoaded'] === false) {
         loadLexicon('json/perma/permaV3_manual.json', permaMLex, 'mLoaded')
       }
+      minWeight.disabled = true
+      maxWeight.disabled = true
     } else if (i === '3') {
       if (lexStatus['tLoaded'] === false) {
         loadLexicon('json/perma/permaV3_manual_tsp75.json', permaTLex, 'tLoaded')
       }
       minWeight.disabled = true
+      maxWeight.disabled = true
     } else if (i === '4') {
       if (lexStatus['sLoaded'] === false) {
         loadLexicon('json/perma/dd_spermaV3.json', permaSLex, 'sLoaded')
       }
+      minWeight.disabled = false
+      maxWeight.disabled = false
+      minWeight.value = -0.86
+      maxWeight.value = 3.35
+      minWeight.min = -0.86
+      maxWeight.max = 3.35
     } else {
       console.error('#permaSelect: invalid selection. Defaulting to 1.')
       permaSelect.value = '1'
     }
-  }, false)
+  }, { passive: true })
 
   prospectCheck.addEventListener('click', function () {
     if (prospectCheck.checked && lexStatus['pLoaded'] === false) {
       loadLexicon('json/prospection/prospection.json', prospLex, 'pLoaded')
     }
     optToggle()
-  }, false)
+  }, { passive: true })
 
   affectCheck.addEventListener('click', function () {
     if (affectCheck.checked && lexStatus['aLoaded'] === false) {
       loadLexicon('json/affect/affect.json', affLex, 'aLoaded')
     }
     optToggle()
-  }, false)
+  }, { passive: true })
 
   document.getElementById('CSVCheck').addEventListener('click', function () {
     var alphaCSV = document.getElementById('alphaCSV')
@@ -857,31 +917,34 @@ document.addEventListener('DOMContentLoaded', function loaded () {
       alphaCSV.classList.add('disabled')
       alphaCSVCheck.disabled = true
     }
-  }, false)
+  }, { passive: true })
 
   ageCheck.addEventListener('click', function () {
     if (ageCheck.checked && lexStatus['eLoaded'] === false) {
       loadLexicon('json/age/age.json', ageLex, 'eLoaded')
     }
-  }, false)
+  }, { passive: true, once: true })
 
   genderCheck.addEventListener('click', function () {
     if (genderCheck.checked && lexStatus['gLoaded'] === false) {
       loadLexicon('json/gender/gender.json', genderLex, 'gLoaded')
     }
-  }, false)
+  }, { passive: true, once: true })
 
   bigFiveCheck.addEventListener('click', function () {
     if (bigFiveCheck.checked && lexStatus['5Loaded'] === false) {
       loadLexicon('json/bigfive/bigfive.json', big5Lex, '5Loaded')
     }
-  }, false)
+  }, { passive: true, once: true })
 
-  // activate popovers
-  $('[data-toggle="popover"]').popover()
-  $('.collapse').collapse()
+  setTimeout(function () {
+    // activate popovers
+    $('[data-toggle="popover"]').popover()
+    $('.collapse').collapse()
+  }, 700)
 
   Chart.defaults.global.responsive = false
+  Chart.defaults.global.maintainAspectRatio = false
 
   /*
   * IE10 viewport hack for Surface/desktop Windows 8 bug
@@ -897,4 +960,4 @@ document.addEventListener('DOMContentLoaded', function loaded () {
     )
     document.querySelector('head').appendChild(msViewportStyle)
   }
-}, {once: true})
+}, {passive: true, once: true})

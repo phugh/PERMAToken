@@ -1,0 +1,9 @@
+{
+  "name": "ppta",
+  "version": "3.0.0",
+  "private": true,
+  "standard": {
+    "globals": [ "Chart", "$" ],
+    "envs": ["browser"]
+  }
+}
