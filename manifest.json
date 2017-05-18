@@ -5,7 +5,7 @@
   "display": "standalone",
   "default_locale": "en",
   "manifest_version": 2,
-  "version": "3.0.0",
+  "version": "3.0.1",
   "theme_color": "#bb463d",
   "orientation" : "portrait",
   "offline_enabled": false,
