@@ -1,6 +1,6 @@
 changelog
 
-** V3.0.0 ** April 2017
+** V3.0.0 ** April/May 2017
 Complete rewrite
 
 ** V2.0.1 ** 11/04/17
