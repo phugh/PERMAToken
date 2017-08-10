@@ -5,7 +5,7 @@ node_modules/
 *.json
 !package.json
 *.log
-.vscode
+.vscode/
 
 ###
 ### Ignore OS X Files

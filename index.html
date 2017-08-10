@@ -1,39 +1,59 @@
-<!DOCTYPE html>
-<html lang="en-GB" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!doctype html>
+<html lang="en-GB">
+    <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Positive Psychology Text Analyser | P. Hughes</title>
+        <title>Positive Psychology Text Analyser | Peter Hughes</title>
         <meta name="description" content="Analyse any text against various positive psychology lexica.">
         <meta name="author" content="Peter Hughes - www.phugh.es">
-        <meta name="robots" content="index, follow">
-        <meta name="theme-color" content="#bb463d">
+
+        <meta name="theme-color" content="#455A64">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="application-name" content="Positive Psychology Text Analyser">
-        <link rel="manifest" href="manifest.json">
-        <link rel="canonical" href="http://www.phugh.es/tech/permatoken/">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <link rel="manifest" href="https://www.phugh.es/tech/permatoken/manifest.json">
+        <link rel="canonical" href="https://www.phugh.es/tech/permatoken/">
 
-        <meta property="og:url" content="http://www.phugh.es/tech/permatoken/"/>
+        <meta property="og:url" content="https://www.phugh.es/tech/permatoken/"/>
         <meta property="og:type" content="website"/>
         <meta property="og:title" content="Positive Psychology Text Analyser"/>
         <meta property="og:description" content="Analyse any text against various positive psychology lexica."/>
-        <meta property="og:image" content="http://www.phugh.es/tech/permatoken/200.png"/>
+        <meta property="og:image" content="https://www.phugh.es/tech/permatoken/img/200.png"/>
 
-        <script type='application/ld+json'>
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@peterhughesmcr">
+        <meta name="twitter:creator" content="@peterhughesmcr">
+        <meta name="twitter:title" content="Positive Psychology Text Analyser | Peter Hughes">
+        <meta name="twitter:description" content="Analyse any text against various positive psychology lexica.">
+        <meta name="twitter:image:src" content="https://www.phugh.es/tech/permatoken/img/512.png">
+        <meta property="og:locale" content="en_GB">
+
+        <script type="application/ld+json">
             {
-                "@context": "http://www.schema.org",
-                "@type": "product",
-                "brand": "Peter Hughes",
+                "@context": "http://schema.org",
+                "@type": "WebSite",
+                "url": "https://www.phugh.es/tech/permatoken",
                 "name": "Positive Psychology Text Analyser",
-                "image": "http://www.phugh.es/tech/permatoken/200.png",
-                "description": "Analyse any text against various positive psychology lexica."
+                "image": "https://www.phugh.es/tech/permatoken/img/512.png",
+                "author": {
+                    "@type": "Person",
+                    "name": "Peter Hughes",
+                    "url": "https://www.phugh.es/"
+                    },
+                "description": "Analyse any text against various positive psychology lexica.",
+                "citation": "https://www.ncbi.nlm.nih.gov/pubmed/26776214",
+                "isBasedOn": "http://www.wwbp.org",
+                "keywords": "Positive Psychology, lexica, lexicon, wellbeing, data, text, analysis"
             }
         </script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-        <link rel='stylesheet' href='css/style.min.css'>
+        <noscript>
+            <link rel="stylesheet" href="css/bootstrap.min.css">
+            <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+            <link rel='stylesheet' href='css/style.min.css'>
+        </noscript>
     </head>
     <body class='loading no-js'>
         <script>document.body.className = document.body.className.replace("no-js","js");</script>
@@ -44,9 +64,6 @@
             <div class="container">
                 <div class="navbar-header">
                     <span class="navbar-brand">Positive Psychology Text Analyser [Beta]</span>
-                </div>
-                <div id="navbar" class="collapse navbar-collapse">
-                    <a href="http://www.phugh.es" target="_blank" class="navbar-text">by P. Hughes</a>
                 </div>
             </div>
         </nav>
@@ -77,7 +94,7 @@
                 <div role="tabpanel" class="tab-pane in active" id="inputSection">
                     <p>&nbsp;</p>
                     <h3>Welcome</h3>
-                    <p>The Positive Psychology Text Analyser allows you to easily compare any text to the <a href="http://www.wwbp.org" target="_blank">World Wellbeing Project's</a> PERMA lexica in English &#x1F1EC;&#x1F1E7; / &#x1F1FA;&#x1F1F8; or <span lang="es">en Español &#x1F1EA;&#x1F1F8;</span>, as well as many of their other lexica. Simply copy any text (transcripts, essays, etc.) into the textbox below, choose any additional options, and press Start!</p>
+                    <p>The Positive Psychology Text Analyser allows you to easily compare any text to the <a href="http://www.wwbp.org" target="_blank" rel="noopener">World Wellbeing Project's</a> PERMA lexica in English &#x1F1EC;&#x1F1E7; / &#x1F1FA;&#x1F1F8; or <span lang="es">en Español &#x1F1EA;&#x1F1F8;</span>, as well as many of their other lexica. Simply copy any text (transcripts, essays, etc.) into the textbox below, choose any additional options, and press Start!</p>
                     <p>It can also output your text as a tokenised CSV file. The tokeniser may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenising if you wish to use that feature.</p>
                     <hr>
                     <div class="form-group">
@@ -89,7 +106,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">PERMA Lexica:
                             <div class="pull-right">
-                                <a tabindex="0" role="button" class="btn btn-link iFix" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.">
+                                <a tabindex="0" role="button" aria-label="" aria-label="" class="btn btn-link iFix" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                             </div>
@@ -97,7 +114,7 @@
                         <div class="row panel-body">
                             <div class="col-xs-12 col-md-4">
                                 <label for="permaSelect">Select a lexicon:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="The Original and Spanish lexica are weighted, data-driven lexica. The 'Manual' and 'TSP75' lexica are 'created in the spirit of Linguistic Inquiry and Word Count (LIWC)' and are not weighted."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="The Original and Spanish lexica are weighted, data-driven lexica. The 'Manual' and 'TSP75' lexica are 'created in the spirit of Linguistic Inquiry and Word Count (LIWC)' and are not weighted."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <select class="form-control" id="permaSelect">
                                     <option value="1">Data-Driven Lexicon (permaV3_dd.csv)</option>
                                     <option value="2">Manual Lexicon (permaV3_manual.csv)</option>
@@ -114,25 +131,25 @@
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="prospectCheck"> Analyse Prospection
                                 </label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses temporal orientation: emphasis on past, present or future."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses temporal orientation: emphasis on past, present or future."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="affectCheck"> Analyse Affect / Intensity
                                 </label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses sentiment and arousal."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses sentiment and arousal."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label id="optBox" class="checkbox-inline disabled">
                                     <input type="checkbox" id="optimismCheck" disabled> Analyse Optimism
                                 </label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="By combining the affect lexicon with the future category of the prospection lexicon, we can analyse optimism (positive future-oriented thinking)."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="By combining the affect lexicon with the future category of the prospection lexicon, we can analyse optimism (positive future-oriented thinking)."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline ">
                                     <input type="checkbox" id="bigFiveCheck"> Analyse "Big Five" Personality Traits
                                 </label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses the so called 'Big Five' personality traits: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Analyses the so called 'Big Five' personality traits: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline ">
@@ -151,12 +168,12 @@
                         <div class="row panel-body">
                             <div class="col-xs-12 col-md-4">
                                 <label for="minWeight">Minimum Weight:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <input type="number" id="minWeight" class="form-control" step="0.01" value="-0.38" min="-0.38">
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label for="maxWeight">Maximum Weight:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <input type="number" id="maxWeight" class="form-control" step="0.01" value="0.86" max="0.86">
                             </div>
                         </div>
@@ -164,7 +181,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">More Options:
                             <div class="pull-right">
-                                <a tabindex="0" role="button" class="btn btn-link iFix" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies will be replaced with '^'.">
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link iFix" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" data-content="Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies will be replaced with '^'.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                             </div>
@@ -213,14 +230,14 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="h1">
                                 <h3 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res1" aria-expanded="false" aria-controls="res1">PERMA Results  <span class="caret"></span></a>
+                                    <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res1" aria-expanded="false" aria-controls="res1">PERMA Results  <span class="caret"></span></a>
                                 </h3>
                             </div>
                             <div id="res1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h1">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Total Matches<a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Total might not be equal to (positive matches + negative matches) as words can match in both positive and negative categories."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></th>
+                                            <th>Total Matches<a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Total might not be equal to (positive matches + negative matches) as words can match in both positive and negative categories."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></th>
                                             <th>Total Unmatched (Neutral Tokens)</th>
                                             <th>Positive</th>
                                             <th>Negative</th>
@@ -305,7 +322,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="h2">
                                 <h3 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res2" aria-expanded="false" aria-controls="res2">PERMA Breakdown  <span class="caret"></span></a>
+                                    <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res2" aria-expanded="false" aria-controls="res2">PERMA Breakdown  <span class="caret"></span></a>
                                 </h3>
                             </div>
                             <div id="res2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h2">
@@ -334,7 +351,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h3">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res3" aria-expanded="false" aria-controls="res3">Prospection Results  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res3" aria-expanded="false" aria-controls="res3">Prospection Results  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h3">
@@ -379,7 +396,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h4">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res4" aria-expanded="false" aria-controls="res4">Prospection Breakdown  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res4" aria-expanded="false" aria-controls="res4">Prospection Breakdown  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h4">
@@ -396,7 +413,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h5">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res5" aria-expanded="false" aria-controls="res5">Affect / Intensity Results  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res5" aria-expanded="false" aria-controls="res5">Affect / Intensity Results  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h5">
@@ -432,7 +449,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h6">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res6" aria-expanded="false" aria-controls="res6">Affect / Intensity Breakdown  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res6" aria-expanded="false" aria-controls="res6">Affect / Intensity Breakdown  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h6">
@@ -447,7 +464,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h7">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res7" aria-expanded="false" aria-controls="res7">Optimism Result  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res7" aria-expanded="false" aria-controls="res7">Optimism Result  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h7">
@@ -462,7 +479,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h8">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res8" aria-expanded="false" aria-controls="res8">Optimism Breakdown  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res8" aria-expanded="false" aria-controls="res8">Optimism Breakdown  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h8">
@@ -477,7 +494,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h9">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res9" aria-expanded="false" aria-controls="res9">Big Five Personality Trait Results  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res9" aria-expanded="false" aria-controls="res9">Big Five Personality Trait Results  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res9" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h9">
@@ -525,7 +542,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h10">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res10" aria-expanded="false" aria-controls="res10">Big Five Breakdown  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res10" aria-expanded="false" aria-controls="res10">Big Five Breakdown  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res10" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h10">
@@ -544,7 +561,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h11">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res11" aria-expanded="false" aria-controls="res11">Age Prediction  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res11" aria-expanded="false" aria-controls="res11">Age Prediction  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h11">
@@ -559,7 +576,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h12">
                                     <h3 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#outputSection" href="#res12" aria-expanded="false" aria-controls="res12">Gender Prediction  <span class="caret"></span></a>
+                                        <a class="collapsed" role="button" aria-label="" data-toggle="collapse" data-parent="#outputSection" href="#res12" aria-expanded="false" aria-controls="res12">Gender Prediction  <span class="caret"></span></a>
                                     </h3>
                                 </div>
                                 <div id="res12" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h12">
@@ -577,14 +594,14 @@
         <footer class="container">
             <hr>
             <p><strong>References</strong></p>
-            <p><cite><a href="https://encrypted.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwibyrmg7prTAhXGslQKHXftBtsQFggeMAA&url=https%3A%2F%2Fpsb.stanford.edu%2Fpsb-online%2Fproceedings%2Fpsb16%2Fschwartz.pdf&usg=AFQjCNELj_TxuIl-apHaufFB8DbEVicnww&sig2=rJ5IvA9OIMUbwJ5cjcr46A" target="_blank">Schwartz, H.A., Sap, M., Kern, M.L., Eichstaedt, J.C., Kapelner, A., Agrawal, M., Blanco, E., Dziurzynski, L., Park, G., Stillwell, D. & Kosinski, M. (2016). Predicting individual well-being through the language of social media. In Biocomputing 2016: Proceedings of the Pacific Symposium (pp. 516-527)</a></cite>.</p>
-            <p><cite><a href="https://www.seas.upenn.edu/~hansens/tempor-naacl15-cr.pdf" target="_blank">Schwartz, H. A., Park, G., Sap, M., Weingarten, E., Eichstaedt, J., Kern, M., Stillwell, D., Kosinski, M., Berger, J., Seligman, M., & Ungar, L. (2015). Extracting Human Temporal Orientation from Facebook Language. NAACL-2015: Conference of the North American Chapter of the Association for Computational Linguistics</a></cite>.</p>
-            <P><cite><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=Na16PsUAAAAJ&citation_for_view=Na16PsUAAAAJ:u-x6o8ySG0sC" target="_blank">Schwartz, H. A., Eichstaedt, J. C., Kern, M. L., Dziurzynski, L., Ramones, S. M., Agrawal, M., Shah, A., Kosinski, M., Stillwell, D., Seligman, M. E., & Ungar, L. H. (2013). Personality, gender, and age in the language of social media: The Open-Vocabulary Approach. PLOS ONE, 8(9), . . e73791.</a></cite></P>
-            <p><cite><a href="http://wwbp.org/papers/va16wassa.pdf" target="_blank">Preotiuc-Pietro, D., Schwartz, H.A., Park, G., Eichstaedt, J., Kern, M., Ungar, L., Shulman, E.P. (2016). Modelling Valence and Arousal in Facebook Posts. Proceedings of the Workshop on Computational Approaches to Subjectivity, Sentiment and Social Media Analysis (WASSA), NAACL</a></cite></p>
+            <p><cite><a href="https://www.ncbi.nlm.nih.gov/pubmed/26776214" target="_blank" rel="noopener">Schwartz, H.A., Sap, M., Kern, M.L., Eichstaedt, J.C., Kapelner, A., Agrawal, M., Blanco, E., Dziurzynski, L., Park, G., Stillwell, D. & Kosinski, M. (2016). Predicting individual well-being through the language of social media. In Biocomputing 2016: Proceedings of the Pacific Symposium (pp. 516-527)</a></cite>.</p>
+            <p><cite><a href="https://www.seas.upenn.edu/~hansens/tempor-naacl15-cr.pdf" target="_blank" rel="noopener">Schwartz, H. A., Park, G., Sap, M., Weingarten, E., Eichstaedt, J., Kern, M., Stillwell, D., Kosinski, M., Berger, J., Seligman, M., & Ungar, L. (2015). Extracting Human Temporal Orientation from Facebook Language. NAACL-2015: Conference of the North American Chapter of the Association for Computational Linguistics</a></cite>.</p>
+            <P><cite><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=Na16PsUAAAAJ&citation_for_view=Na16PsUAAAAJ:u-x6o8ySG0sC" target="_blank" rel="noopener">Schwartz, H. A., Eichstaedt, J. C., Kern, M. L., Dziurzynski, L., Ramones, S. M., Agrawal, M., Shah, A., Kosinski, M., Stillwell, D., Seligman, M. E., & Ungar, L. H. (2013). Personality, gender, and age in the language of social media: The Open-Vocabulary Approach. PLOS ONE, 8(9), . . e73791.</a></cite></P>
+            <p><cite><a href="http://wwbp.org/papers/va16wassa.pdf" target="_blank" rel="noopener">Preotiuc-Pietro, D., Schwartz, H.A., Park, G., Eichstaedt, J., Kern, M., Ungar, L., Shulman, E.P. (2016). Modelling Valence and Arousal in Facebook Posts. Proceedings of the Workshop on Computational Approaches to Subjectivity, Sentiment and Social Media Analysis (WASSA), NAACL</a></cite></p>
             <p><strong>Acknowledgements</strong></p>
-            <p>The Positive Psychology Text Analyser (PPTA), created by <a href="http://www.phugh.es">P. Hughes</a>. The lexica were created by Penn's <a href="http://www.wwbp.org" target="_blank">World Well-being Project</a> and are licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. PPTA is released under the same licence. The PPTA and its creator are not associated with, and do not represent, Penn, WWBP, or any of the authors listed above.</p>
+            <p>The Positive Psychology Text Analyser (PPTA), created by <a href="http://www.phugh.es">P. Hughes</a>. The lexica were created by Penn's <a href="http://www.wwbp.org" target="_blank" rel="noopener">World Well-being Project</a> and are licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. PPTA is released under the same licence. The PPTA and its creator are not associated with, and do not represent, Penn, WWBP, or any of the authors listed above.</p>
             <p><strong>Source</strong></p>
-            <p>This web-app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank">here</a>. Pull requests welcome and encouraged!</p>
+            <p>This web-app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank" rel="noopener">here</a>. Pull requests welcome and encouraged!</p>
         </footer>
 
         <div id="loader" tabindex="-1" class="modal container">
@@ -612,9 +629,29 @@
 
         </div> <!-- end of blur -->
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-        <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-        <script defer src="js/main.min.js"></script>
+        <script>
+            'use strict';
+            function loadCss (filename) {
+                var l = document.createElement('link')
+                l.rel = 'stylesheet'
+                l.href = filename
+                var h = document.getElementsByTagName('head')[0]
+                h.parentNode.insertBefore(l, h)
+            }
+            loadCss("css/bootstrap.min.css")
+            loadCss("css/bootstrap-theme.min.css")
+            loadCss("css/style.min.css")
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(function (registration) {
+                    return false
+                }, function (err) {
+                    console.log('ServiceWorker registration failed: ', err)
+                })
+            }
+        </script>
+        <script src="js/jquery-3.2.1.slim.min.js"></script>
+        <script async src="js/bootstrap.min.js"></script>
+        <script src="js/chart.min.js"></script>
+        <script defer src="js/main.js"></script>
     </body>
 </html>

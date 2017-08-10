@@ -42,50 +42,39 @@ var affChart
  * Helpers              *
  * #################### */
 
-// multiple indexes
-Array.prototype.indexesOf = function (el) { // eslint-disable-line
-  var idxs = []
-  var i = this.length - 1
+// get number of times el appears in an array
+function indexesOf (arr, el) {
+  const idxs = []
+  let i = arr.length - 1
   for (i; i >= 0; i--) {
-    if (this[i] === el) {
+    if (arr[i] === el) {
       idxs.unshift(i)
     }
   }
   return idxs
 }
 
-// array contains
-Array.prototype.containsArray = function (val) { // eslint-disable-line
-  var hash = {}
-  var i = 0
-  var len = this.length
-  for (i; i < len; i++) {
-    hash[this[i]] = i
-  }
-  return hash.hasOwnProperty(val)
-}
-
 /**
 * Generate a CSV URI from an array
 * @function makeCSV
-* @param {Array} arr {array of tokens}
+* @param {Array} arr array of tokens
 */
 function makeCSV (arr) {
   if (document.getElementById('alphaCheck').checked) arr.sort()
   var lineArray = []
-  var word, i
+  var word
+  var i = 0
   var len = arr.length
-  for (i = 0; i < len; i++) {
+  for (i; i < len; i++) {
     word = arr[i].replace(/'/g, '^')
     lineArray.push(word)
   }
   var csvContent = lineArray.join('\n')
-  var encodedUri = encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
-  return encodedUri
+  return encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
 }
 
 /* #################### *
- * UI Functions     *
+ * UI Functions         *
  * #################### */
 
 /**
@@ -138,21 +127,12 @@ function optToggle () {
 /**
 * Load JSON files into the relevant lexicon object
 * @function loadLexicon
-* @param  {string} file   {JSON file name}
-* @param  {Object} obj    {the global lexicon object}
-* @param  {string} loader {relevant lexStatus item e.g. dLoaded}
+* @param {string} file JSON file name
+* @param {Object} obj the global lexicon object
+* @param {string} loader relevant lexStatus item e.g. dLoaded
 */
 function loadLexicon (file, obj, loader) {
   body.classList.add('loading')
-
-  var sort = function (lex) {
-    var key
-    for (key in lex) {
-      if (!lex.hasOwnProperty(key)) continue
-      obj[key] = lex[key]
-    }
-    body.classList.remove('loading')
-  }
 
   var request = new XMLHttpRequest()
   request.open('GET', file, true)
@@ -161,18 +141,23 @@ function loadLexicon (file, obj, loader) {
     if (this.status >= 200 && this.status < 400) {
       var lex = JSON.parse(this.response)
       lexStatus[loader] = true
-      sort(lex)
-    } else {
+      var key
+      for (key in lex) {
+        if (!lex.hasOwnProperty(key)) continue
+        obj[key] = lex[key]
+      }
       body.classList.remove('loading')
+    } else {
       window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
-      return false
+      body.classList.remove('loading')
+      // return false
     }
   }
 
   request.onerror = function () {
-    body.classList.remove('loading')
     window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
-    return false
+    body.classList.remove('loading')
+    // return false
   }
 
   request.send()
@@ -181,27 +166,26 @@ function loadLexicon (file, obj, loader) {
 /**
 * tokenise a string into an array
 * @function tokenise
-* @param  {string} str {input string}
-* @return {Array} {an array of tokens}
+* @param {string} str input string
+* @return {Array} an array of tokens
 */
 function tokenise (str) {
   // adapted from http://wwbp.org/downloads/public_data/happierfuntokenizing.zip
   var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi') // eslint-disable-line
-  var tokens = str.match(reg)
-  return tokens
+  return str.match(reg)
 }
 
 /**
 * @function sortMatches
-* @param  {Array} arr {array to match against lexicon}
-* @param  {Object} obj {lexicon object}
-* @return {Object} {object of matches}
+* @param {Array} arr array to match against lexicon
+* @param {Object} obj lexicon object
+* @return {Object} object of matches
 */
 function sortMatches (arr, obj) {
   var sortedMatches = {'counts': {}}
 
   // sort out min/max thresholds
-  var dd = false
+  var dd = false // is the lexicon data-driven?
   var min = -999
   var max = 999
   var sel = permaSelect.value
@@ -215,27 +199,27 @@ function sortMatches (arr, obj) {
   for (cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue
     var matches = []
-    var key // word
+    var word // word
     var data = obj[cat]
     var permaCat = (cat.startsWith('POS') || cat.startsWith('NEG'))
     var i = 0
-    for (key in data) {
-      if (!data.hasOwnProperty(key)) continue
-      var weight = data[key]
-      if (arr.indexOf(key) > -1) {
+    for (word in data) {
+      if (!data.hasOwnProperty(word)) continue
+      var weight = data[word]
+      if (arr.indexOf(word) > -1) {
         if ((permaCat && dd) && (weight < min || weight > max)) continue
         var match = []
-        var reps = arr.indexesOf(key).length
+        var reps = indexesOf(arr, word).length
         i += reps
         if (reps > 1) {
           var words = []
           var x
           for (x = 0; x < reps; x++) {
-            words.push(key)
+            words.push(word)
           }
           match.push([words, weight])
         } else {
-          match.push([key, weight])
+          match.push([word, weight])
         }
         matches.push(match)
       }
@@ -248,9 +232,9 @@ function sortMatches (arr, obj) {
 
 /**
 * @function getWords
-* @param  {Object} obj {lexicon matches object}
-* @param  {string} str {optional object key to match}
-* @return {Array} {array of words}
+* @param {Object} obj lexicon matches object
+* @param {string} str optional object key to match
+* @return {Array} array of words
 */
 function getWords (obj, str) {
   var words = []
@@ -258,15 +242,15 @@ function getWords (obj, str) {
   for (cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue
     if (cat.startsWith(str) && cat !== 'counts') {
-      var key
+      var word
       var data = obj[cat]
-      for (key in data) {
-        if (!data.hasOwnProperty(key)) continue
-        var item = data[key][0][0]
+      for (word in data) {
+        if (!data.hasOwnProperty(word)) continue
+        var item = data[word][0][0]
         var len = 0
         if (Array.isArray(item)) {
           len = item.length
-          item = data[key][0][0][0]
+          item = data[word][0][0][0]
         }
         if (words.indexOf(item) === -1) {
           if (len === 0) {
@@ -287,8 +271,8 @@ function getWords (obj, str) {
 /**
 * Remove duplicates by appending count to item
 * @function handleDuplicates
-* @param  {Object} obj {input object}
-* @return {Object} {output object}
+* @param {Object} obj input object
+* @return {Object}
 */
 function handleDuplicates (obj) {
   var out = {}
@@ -307,7 +291,7 @@ function handleDuplicates (obj) {
         list.push(el)
       }
     }
-    list.sort()
+    // list.sort()
     out[cat] = list
   }
   return out
@@ -316,46 +300,35 @@ function handleDuplicates (obj) {
 /**
 * Calculate lexical usage from array
 * @function calcLex
-* @param  {Object} obj {lexicon matches to add}
-* @param  {number} wc  {total word count}
-* @param  {number} int {intercept value}
-* @param  {string} enc {encoding type}
-* @return {number} {the lexical value}
+* @param {Object} obj lexicon matches to add
+* @param {number} wc total word count
+* @param {number} int intercept value
+* @param {string} enc encoding type
+* @return {number} the lexical value
 */
 function calcLex (obj, wc, int, enc) {
+  // error prevention
+  if (obj == null) return null
+  if (wc != null && typeof wc !== 'number') wc = Number(wc)
+  if (int != null && typeof int !== 'number') int = Number(int)
   if (int == null) int = 0
 
-  var counts = []
-  var weights = []
-
+  var lex = 0
   var cat
   for (cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue
     var word = obj[cat][0][0]
-    var weight = obj[cat][0][1]
-    if (Array.isArray(word)) {
-      counts.push(word.length)
-    } else {
-      counts.push(1)
-    }
-    weights.push(weight)
-  }
-
-  var lex = 0
-  var len = counts.length
-  var i = 0
-  for (i; i < len; i++) {
-    var weightNum = Number(weights[i])
+    var weight = Number(obj[cat][0][1])
+    var count = 1
+    if (Array.isArray(word)) count = word.length
     if (enc === 'freq') {
-      var count = Number(counts[i])
-      var words = Number(wc)
-      lex += ((count / words) * weightNum)
+      lex += ((count / wc) * weight)
     } else {
-      lex += weightNum
+      lex += weight
     }
   }
-  lex += Number(int)
-  return Number(lex)
+  lex += int
+  return lex
 }
 
 function main () {
@@ -941,10 +914,7 @@ document.addEventListener('DOMContentLoaded', function loaded () {
     // activate popovers
     $('[data-toggle="popover"]').popover()
     $('.collapse').collapse()
-  }, 700)
-
-  Chart.defaults.global.responsive = false
-  Chart.defaults.global.maintainAspectRatio = false
+  }, 600)
 
   /*
   * IE10 viewport hack for Surface/desktop Windows 8 bug
@@ -960,4 +930,8 @@ document.addEventListener('DOMContentLoaded', function loaded () {
     )
     document.querySelector('head').appendChild(msViewportStyle)
   }
+
+  // Chart.js globals
+  Chart.defaults.global.responsive = false
+  Chart.defaults.global.maintainAspectRatio = false
 }, {passive: true, once: true})
