@@ -1,5 +1,14 @@
 changelog
 
+** V3.1.0 ** August 2017
+- Impliment suggestions from Chrome Dev Tools Audit feature (i.e. service worker, etc)
+- Make us somewhat offline capable
+- Add more meta tags / OG / ldJSON data
+- Small textual / stylistic improvements
+
+** V3.0.0 ** April/May 2017
+Complete rewrite
+
 ** V2.0.1 ** 11/04/17
 - Fix breakdown printing
 - Improve mobile appearance
