@@ -125,6 +125,45 @@ function optToggle () {
  * #################### */
 
 /**
+ * @function getNgrams
+ * @param  {Array} arr array of tokens
+ * @param  {Number} n number of grams
+ * @return {Array} array of n-grams
+ */
+function getNgrams (arr, n) {
+  n -= 1
+  const ngrams = []
+
+  const mainLoop = i => {
+    const a = []
+    let h = 0
+    const x = n + 1
+    for (h; h < x; h++) {
+      a.push(arr[(i + n) + (h - n)])
+    }
+    return a
+  }
+
+  let i = 0
+  const len = arr.length - n
+  for (i; i < len; i++) {
+    ngrams.push(mainLoop(i))
+  }
+
+  return ngrams
+}
+
+function ngramConvert (arr) {
+  const len = arr.length
+  const result = []
+  let i = 0
+  for (i; i < len; i++) {
+    result.push(arr[i].join(' '))
+  }
+  return result
+}
+
+/**
 * Load JSON files into the relevant lexicon object
 * @function loadLexicon
 * @param {string} file JSON file name
@@ -374,6 +413,21 @@ function main () {
     b.classList.add('btn', 'btn-default', 'btn-block')
     btnRow.appendChild(a)
     btnBlc.appendChild(b)
+  }
+
+  // Add ngrams after we do wordCount and CSV
+  var ngramSelect = document.getElementById('ngramSelect').value
+  var ngrams = []
+  if (ngramSelect === '1') {
+    ngrams.push(ngramConvert(getNgrams(tokens, 2)))
+    ngrams.push(ngramConvert(getNgrams(tokens, 3)))
+  } else if (ngramSelect === '2') {
+    ngrams.push(ngramConvert(getNgrams(tokens, 2)))
+  }
+  if (ngramSelect === '1' || ngramSelect === '2') {
+    for (let i = 0; i < ngrams.length; i++) {
+      tokens = tokens.concat(ngrams[i])
+    }
   }
 
   // generate our match objects

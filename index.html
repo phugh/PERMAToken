@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Positive Psychology Text Analyser | Peter Hughes</title>
-        <meta name="description" content="Analyse any text against various positive psychology lexica.">
+        <meta name="description" content="Quantitative text analyse against various positive psychology lexica.">
         <meta name="author" content="Peter Hughes - www.phugh.es">
 
         <meta name="theme-color" content="#455A64">
@@ -13,20 +13,20 @@
         <meta name="application-name" content="Positive Psychology Text Analyser">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
-        <link rel="manifest" href="https://www.phugh.es/tech/permatoken/manifest.json">
+        <link rel="manifest" href="manifest.json">
         <link rel="canonical" href="https://www.phugh.es/tech/permatoken/">
 
         <meta property="og:url" content="https://www.phugh.es/tech/permatoken/"/>
         <meta property="og:type" content="website"/>
         <meta property="og:title" content="Positive Psychology Text Analyser"/>
-        <meta property="og:description" content="Analyse any text against various positive psychology lexica."/>
+        <meta property="og:description" content="Quantitative text analyse against various positive psychology lexica."/>
         <meta property="og:image" content="https://www.phugh.es/tech/permatoken/img/200.png"/>
 
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="@peterhughesmcr">
         <meta name="twitter:creator" content="@peterhughesmcr">
         <meta name="twitter:title" content="Positive Psychology Text Analyser | Peter Hughes">
-        <meta name="twitter:description" content="Analyse any text against various positive psychology lexica.">
+        <meta name="twitter:description" content="Quantitative text analyse against various positive psychology lexica.">
         <meta name="twitter:image:src" content="https://www.phugh.es/tech/permatoken/img/512.png">
         <meta property="og:locale" content="en_GB">
 
@@ -79,7 +79,7 @@
                 <p><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Javascript is disabled in your browser. To view this page, please enable javascript.</p>
             </div>
             <div class="alert alert-warning robots-nocontent" role="alert">
-                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check and double-check the results you receive here, the creator does not accept responsibility for inaccurate results.</p>
+                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check and double-check the results you receive here against the original lexica.</p>
             </div>
             <!--googleon: index-->
 
@@ -99,6 +99,7 @@
                     <hr>
                     <div class="form-group">
                         <label for="textInput">1 - Paste text to be analysed here:</label>
+                        <p>(Your text is never transfered to, or saved on our server)</p>
                         <textarea class="form-control" placeholder="Paste text here..." id="textInput" rows="5" autofocus></textarea>
                     </div>
                     <hr>
@@ -175,6 +176,15 @@
                                 <label for="maxWeight">Maximum Weight:</label>
                                 <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <input type="number" id="maxWeight" class="form-control" step="0.01" value="0.86" max="0.86">
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <label for="ngramSelect">Include nGrams:</label>
+                                <a tabindex="0" role="button" aria-label="" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" data-content="nGrams are contiguous clusters of words. Bigrams are clusters of 2 words, trigrams 3. For very long text it is recommended that this is set to 'neither'"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                                <select class="form-control" id="ngramSelect">
+                                    <option value="1">Bigrams and Trigrams</option>
+                                    <option value="2">Bigrams Only</option>
+                                    <option value="3">Neither</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -602,6 +612,8 @@
             <p>The Positive Psychology Text Analyser (PPTA), created by <a href="http://www.phugh.es">P. Hughes</a>. The lexica were created by Penn's <a href="http://www.wwbp.org" target="_blank" rel="noopener">World Well-being Project</a> and are licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. PPTA is released under the same licence. The PPTA and its creator are not associated with, and do not represent, Penn, WWBP, or any of the authors listed above.</p>
             <p><strong>Source</strong></p>
             <p>This web-app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank" rel="noopener">here</a>. Pull requests welcome and encouraged!</p>
+            <p><strong>How to reference this site (APA style)</strong></p>
+            <p>Hughes, P. T. (2017). Positive Psychology Text Analyser. [Computer Software] Retrieved from https://www.phugh.es/tech/permatoken.</p>
         </footer>
 
         <div id="loader" tabindex="-1" class="modal container">
@@ -642,10 +654,8 @@
             loadCss("css/bootstrap-theme.min.css")
             loadCss("css/style.min.css")
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').then(function (registration) {
-                    return false
-                }, function (err) {
-                    console.log('ServiceWorker registration failed: ', err)
+                navigator.serviceWorker.register('/sw.js', {scope: "./"}).then(function (registration, err) {
+                    if (err) console.log('ServiceWorker registration failed: ', err)
                 })
             }
         </script>

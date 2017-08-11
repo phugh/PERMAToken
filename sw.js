@@ -1,10 +1,18 @@
-var CACHE_NAME = 'cache-v1'
+var CACHE_NAME = 'cache-v2'
 var urlsToCache = [
   '/',
   '/index.html',
   '/css/style.min.css',
-  '/js/main.js',
-  'json/perma/permaV3_dd.json',
+  '/css/bootstrap.min.css',
+  '/css/bootstrap.min.css.map',
+  '/css/bootstrap-theme.min.css',
+  '/css/bootstrap-theme.min.css.map',
+  '/js/main.min.js',
+  '/js/compromise.min.js',
+  '/js/chart.min.js',
+  '/js/bootstrap.min.js',
+  '/js/jquery-3.2.1.slim.min.js',
+  '/json/perma/permaV3_dd.json',
   '/manifest.json'
 ]
 self.addEventListener('install', function (event) {
@@ -41,7 +49,7 @@ self.addEventListener('fetch', function (event) {
     )
 })
 self.addEventListener('activate', function (event) {
-  var cacheWhitelist = ['cache-v1']
+  var cacheWhitelist = ['cache-v2']
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(

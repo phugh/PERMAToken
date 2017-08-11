@@ -1,6 +1,9 @@
 changelog
 
-** V3.1.0 ** August 2017
+** V3.1.1 ** 11/08/17
+- Add bigram and trigram checking
+
+** V3.1.0 ** June - August 2017
 - Impliment suggestions from Chrome Dev Tools Audit feature (i.e. service worker, etc)
 - Make us somewhat offline capable
 - Add more meta tags / OG / ldJSON data
