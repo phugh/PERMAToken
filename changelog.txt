@@ -1,5 +1,10 @@
 changelog
 
+** V3.1.2 ** 12/08/17
+- Optimise some functions
+- Fix CSV generator
+- Fix wordcount errors now that ngrams are included
+
 ** V3.1.1 ** 11/08/17
 - Add bigram and trigram checking
 

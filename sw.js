@@ -8,7 +8,6 @@ var urlsToCache = [
   '/css/bootstrap-theme.min.css',
   '/css/bootstrap-theme.min.css.map',
   '/js/main.min.js',
-  '/js/compromise.min.js',
   '/js/chart.min.js',
   '/js/bootstrap.min.js',
   '/js/jquery-3.2.1.slim.min.js',

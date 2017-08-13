@@ -1,3 +1,9 @@
+'use strict'
+
+/* #################### *
+ * Caches and Globals   *
+ * #################### */
+
 // storage for the loaded lexica
 var permaDLex = {}
 var permaMLex = {}
@@ -42,11 +48,17 @@ var affChart
  * Helpers              *
  * #################### */
 
-// get number of times el appears in an array
+/**
+ * Get the indexes of duplicate elements in an array
+ * @function indexesOf
+ * @param  {Array} arr input array
+ * @param  {string} el element to test against
+ * @return {Array} array of indexes
+ */
 function indexesOf (arr, el) {
-  const idxs = []
-  let i = arr.length - 1
-  for (i; i >= 0; i--) {
+  var idxs = []
+  var i = arr.length
+  while (i--) {
     if (arr[i] === el) {
       idxs.unshift(i)
     }
@@ -58,19 +70,17 @@ function indexesOf (arr, el) {
 * Generate a CSV URI from an array
 * @function makeCSV
 * @param {Array} arr array of tokens
+* @return {URI} CSV URI
 */
 function makeCSV (arr) {
   if (document.getElementById('alphaCheck').checked) arr.sort()
-  var lineArray = []
-  var word
+  var csv = 'data:text/csv;charset=UTF-16LE,'
   var i = 0
   var len = arr.length
   for (i; i < len; i++) {
-    word = arr[i].replace(/'/g, '^')
-    lineArray.push(word)
+    csv += arr[i] + '\n'
   }
-  var csvContent = lineArray.join('\n')
-  return encodeURI('data:text/csv;charset=UTF-16LE,' + csvContent)
+  return encodeURI(csv)
 }
 
 /* #################### *
@@ -89,9 +99,8 @@ function clearCanvases () {
   if (affChart != null) affChart.destroy()
   // remove and repace canvas elements
   var c = document.getElementsByTagName('canvas')
-  var len = c.length
-  var i = 0
-  for (i; i < len; i++) {
+  var i = c.length
+  while (i--) {
     var x = c[i].parentNode
     var canvas = document.createElement('canvas')
     canvas.id = c[i].id
@@ -131,21 +140,21 @@ function optToggle () {
  * @return {Array} array of n-grams
  */
 function getNgrams (arr, n) {
-  n -= 1
-  const ngrams = []
+  n -= 1  // to keep consistent with English language, i.e. Bi- = 2, Tri- = 3..
+  var ngrams = []
 
-  const mainLoop = i => {
-    const a = []
-    let h = 0
-    const x = n + 1
+  var mainLoop = function (i) {
+    var a = []
+    var h = 0
+    var x = n + 1
     for (h; h < x; h++) {
       a.push(arr[(i + n) + (h - n)])
     }
     return a
   }
 
-  let i = 0
-  const len = arr.length - n
+  var i = 0
+  var len = arr.length - n
   for (i; i < len; i++) {
     ngrams.push(mainLoop(i))
   }
@@ -154,9 +163,9 @@ function getNgrams (arr, n) {
 }
 
 function ngramConvert (arr) {
-  const len = arr.length
-  const result = []
-  let i = 0
+  var i = 0
+  var len = arr.length
+  var result = []
   for (i; i < len; i++) {
     result.push(arr[i].join(' '))
   }
@@ -189,14 +198,12 @@ function loadLexicon (file, obj, loader) {
     } else {
       window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
       body.classList.remove('loading')
-      // return false
     }
   }
 
   request.onerror = function () {
     window.alert('There was an error loading the lexicon! Please refresh the page and try again.')
     body.classList.remove('loading')
-    // return false
   }
 
   request.send()
@@ -358,7 +365,7 @@ function calcLex (obj, wc, int, enc) {
     if (!obj.hasOwnProperty(cat)) continue
     var word = obj[cat][0][0]
     var weight = Number(obj[cat][0][1])
-    var count = 1
+    var count = 1 // if the word isn't an array it means it appears once only
     if (Array.isArray(word)) count = word.length
     if (enc === 'freq') {
       lex += ((count / wc) * weight)
@@ -385,50 +392,41 @@ function main () {
     return false
   }
 
-  // remove any existing CSV buttons
-  document.getElementById('buttonRow').innerHTML = ''
-  document.getElementById('buttonRowBlc').innerHTML = ''
-
   // clear all the canvas elements
   clearCanvases()
 
   // create array of individual words
   var tokens = tokenise(text)
-  var wordCount = tokens.length
+
+  // get true word count
+  var wrdSplit = /\s+/gi;
+  var trueCount = text.replace(wrdSplit, ' ').split(' ').length;
 
   // make the CSV file if selected
   if (document.getElementById('CSVCheck').checked) {
     var csv = makeCSV(tokens)
-    var t = Date.now().toString()
-    var btnRow = document.getElementById('buttonRow')
-    var btnBlc = document.getElementById('buttonRowBlc')
     var a = document.createElement('a')
     a.setAttribute('href', csv)
-    a.setAttribute('download', 'PPTA_Tokens_' + t + '.csv')
-    a.classList.add('btn', 'btn-default', 'btn-lg')
-    a.innerHTML = 'Save CSV'
-    var b = document.createElement('a')
-    b.setAttribute('href', csv)
-    b.setAttribute('download', 'PPTA_Tokens_' + t + '.csv')
-    b.classList.add('btn', 'btn-default', 'btn-block')
-    btnRow.appendChild(a)
-    btnBlc.appendChild(b)
+    a.setAttribute('download', 'PPTA_Tokens_' + Date.now().toString() + '.csv')
+    a.click()
   }
 
-  // Add ngrams after we do wordCount and CSV
+  // Add ngrams after we do CSV
   var ngramSelect = document.getElementById('ngramSelect').value
-  var ngrams = []
-  if (ngramSelect === '1') {
-    ngrams.push(ngramConvert(getNgrams(tokens, 2)))
-    ngrams.push(ngramConvert(getNgrams(tokens, 3)))
-  } else if (ngramSelect === '2') {
-    ngrams.push(ngramConvert(getNgrams(tokens, 2)))
-  }
   if (ngramSelect === '1' || ngramSelect === '2') {
-    for (let i = 0; i < ngrams.length; i++) {
+    var ngrams = []
+    if (ngramSelect === '1') {
+      ngrams.push(ngramConvert(getNgrams(tokens, 2)))
+      ngrams.push(ngramConvert(getNgrams(tokens, 3)))
+    } else if (ngramSelect === '2') {
+      ngrams.push(ngramConvert(getNgrams(tokens, 2)))
+    }
+    for (var i = 0; i < ngrams.length; i++) {
       tokens = tokens.concat(ngrams[i])
     }
   }
+
+  var wordCount = tokens.length
 
   // generate our match objects
   var PERMA = {}
@@ -772,6 +770,7 @@ function main () {
   // display results
   // @todo: this is ugly, is there a better way to do this?
   document.getElementById('wordcount').textContent = wordCount
+  document.getElementById('truecount').textContent = trueCount
   document.getElementById('matches').textContent = PERMA.counts.TOTAL + ' (' + matchCent + '%)'
   document.getElementById('pmatches').textContent = PERMA.counts.POS_T
   document.getElementById('nmatches').textContent = PERMA.counts.NEG_T
@@ -876,9 +875,8 @@ document.addEventListener('DOMContentLoaded', function loaded () {
   loadLexicon('json/perma/permaV3_dd.json', permaDLex, 'dLoaded')
 
   // event listeners
-  var startBtns = document.getElementsByClassName('startButton')
-  startBtns[0].addEventListener('click', main, false)
-  startBtns[1].addEventListener('click', main, false)
+  var startBtn = document.getElementById('startButton')
+  startBtn.addEventListener('click', main, false)
 
   permaSelect.addEventListener('change', function () {
     var i = permaSelect.value
@@ -968,6 +966,7 @@ document.addEventListener('DOMContentLoaded', function loaded () {
     // activate popovers
     $('[data-toggle="popover"]').popover()
     $('.collapse').collapse()
+    $('.alert').alert()
   }, 600)
 
   /*
