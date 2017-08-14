@@ -35,5 +35,10 @@
     "src": "\/img/512.png",
     "sizes": "512x512",
     "type": "image\/png"
+  },
+  {
+    "src": "\/img/banner.png",
+    "sizes": "2400x1260",
+    "type": "image/png"
   }]
 }

@@ -400,7 +400,7 @@ function main () {
 
   // get true word count
   var wrdSplit = /\s+/gi;
-  var trueCount = text.replace(wrdSplit, ' ').split(' ').length;
+  var trueCount = text.replace(wrdSplit, ' ').split(' ').length
 
   // make the CSV file if selected
   if (document.getElementById('CSVCheck').checked) {
