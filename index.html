@@ -85,7 +85,7 @@
             </noscript>
             <div class="alert alert-warning alert-dismissible robots-nocontent" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check and double-check the results you receive here against the original lexica.</p>
+                <p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> This software is in development. Please check the results you receive here against the original lexica.</p>
             </div>
             <!--googleon: index-->
 
@@ -105,7 +105,7 @@
                     <hr>
                     <div class="form-group">
                         <label for="textInput">1 - Paste text to be analysed here:</label>
-                        <p>(Your text is private and never transfered to, or saved on our server!)</p>
+                        <p>(Your text is private and never transferred to, or saved on our server!)</p>
                         <textarea class="form-control" placeholder="Paste text here..." id="textInput" rows="5" autofocus></textarea>
                     </div>
                     <hr>
@@ -185,21 +185,21 @@
                         <div class="row panel-body">
                             <div class="col-xs-12 col-md-4">
                                 <label for="minWeight">Minimum Weight:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold." data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold.">
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold. Only affects the PERMA lexicon." data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches below a certain threshold. Only affects the PERMA lexicon.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                                 <input type="number" id="minWeight" class="form-control" step="0.01" value="-0.38" min="-0.38">
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label for="maxWeight">Maximum Weight:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold." data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold.">
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold.  Only affects the PERMA lexicon." data-content="Data-Driven lexica contain items with very small weights. Use this to exclude matches above a certain threshold. Only affects the PERMA lexicon.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                                 <input type="number" id="maxWeight" class="form-control" step="0.01" value="0.86" max="0.86">
                             </div>
                             <div class="col-xs-12 col-md-4">
-                                <label for="ngramSelect">Include nGrams:</label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: nGrams are contiguous clusters of words. Bigrams are clusters of 2 words, trigrams 3. For very long text it is recommended that this is set to 'neither'" data-content="nGrams are contiguous clusters of words. Bigrams are clusters of 2 words, trigrams 3. For very long text it is recommended that this is set to 'neither'">
+                                <label for="ngramSelect">Include n-grams:</label>
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: n-grams are contiguous clusters of words. Bigrams are clusters of 2 words, trigrams 3. For very long text it is recommended that this is set to 'neither'" data-content="nGrams are contiguous clusters of words. Bigrams are clusters of 2 words, trigrams 3. For very long text it is recommended that this is set to 'neither'">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                                 <select class="form-control" id="ngramSelect">
@@ -224,6 +224,11 @@
                             <div class="col-xs-12 col-md-4">
                                 <label id="alphaCSV" class="checkbox-inline disabled">
                                     <input type="checkbox" id="alphaCheck" disabled> Sort tokens alphabetically
+                                </label>
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="incngram" checked> Include n-grams in token count
                                 </label>
                             </div>
                         </div>
