@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-GB">
     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
         <meta charset="UTF-8">
@@ -15,6 +15,8 @@
         <meta name="MobileOptimized" content="320">
         <link rel="manifest" href="manifest.json">
         <link rel="canonical" href="https://www.phugh.es/tech/permatoken/">
+
+        <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
         <meta property="fb:app_id" content="490058711328587"/>
         <meta property="og:url" content="https://www.phugh.es/tech/permatoken/"/>
@@ -53,6 +55,51 @@
             }
         </script>
 
+        <style>
+            /* load these styles inline so 'loading' screen appears correctly
+                before stylesheets have been loaded */
+            body {font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;}
+            body.loading {overflow: hidden;}
+            body.loading .blur {filter: blur(3px);}
+            body.loading .modal {display: block;}
+            h1 {
+                font-weight: 500;
+                font-size: 36px;
+                line-height: 1.1;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            .container {
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            .centre-block {
+                display: block;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 100vw;
+                height: 100%;
+                width: 100%;
+                background: #fff;
+                background: rgba(255, 255, 255, .7);
+            }
+            .text-center {
+                text-align: center;
+            }
+            /* Loading spinner by http://tobiasahlin.com/spinkit/ */
+            .sk-fading-circle{margin:100px auto;width:40px;height:40px;position:relative}.sk-fading-circle .sk-circle{width:100%;height:100%;position:absolute;left:0;top:0}.sk-fading-circle .sk-circle:before{content:'';display:block;margin:0 auto;width:15%;height:15%;background-color:#333;border-radius:100%;-webkit-animation:sk-circleFadeDelay 1.2s infinite ease-in-out both;animation:sk-circleFadeDelay 1.2s infinite ease-in-out both}.sk-fading-circle .sk-circle2{-webkit-transform:rotate(30deg);-ms-transform:rotate(30deg);transform:rotate(30deg)}.sk-fading-circle .sk-circle3{-webkit-transform:rotate(60deg);-ms-transform:rotate(60deg);transform:rotate(60deg)}.sk-fading-circle .sk-circle4{-webkit-transform:rotate(90deg);-ms-transform:rotate(90deg);transform:rotate(90deg)}.sk-fading-circle .sk-circle5{-webkit-transform:rotate(120deg);-ms-transform:rotate(120deg);transform:rotate(120deg)}.sk-fading-circle .sk-circle6{-webkit-transform:rotate(150deg);-ms-transform:rotate(150deg);transform:rotate(150deg)}.sk-fading-circle .sk-circle7{-webkit-transform:rotate(180deg);-ms-transform:rotate(180deg);transform:rotate(180deg)}.sk-fading-circle .sk-circle8{-webkit-transform:rotate(210deg);-ms-transform:rotate(210deg);transform:rotate(210deg)}.sk-fading-circle .sk-circle9{-webkit-transform:rotate(240deg);-ms-transform:rotate(240deg);transform:rotate(240deg)}.sk-fading-circle .sk-circle10{-webkit-transform:rotate(270deg);-ms-transform:rotate(270deg);transform:rotate(270deg)}.sk-fading-circle .sk-circle11{-webkit-transform:rotate(300deg);-ms-transform:rotate(300deg);transform:rotate(300deg)}.sk-fading-circle .sk-circle12{-webkit-transform:rotate(330deg);-ms-transform:rotate(330deg);transform:rotate(330deg)}.sk-fading-circle .sk-circle2:before{-webkit-animation-delay:-1.1s;animation-delay:-1.1s}.sk-fading-circle .sk-circle3:before{-webkit-animation-delay:-1s;animation-delay:-1s}.sk-fading-circle .sk-circle4:before{-webkit-animation-delay:-.9s;animation-delay:-.9s}.sk-fading-circle .sk-circle5:before{-webkit-animation-delay:-.8s;animation-delay:-.8s}.sk-fading-circle .sk-circle6:before{-webkit-animation-delay:-.7s;animation-delay:-.7s}.sk-fading-circle .sk-circle7:before{-webkit-animation-delay:-.6s;animation-delay:-.6s}.sk-fading-circle .sk-circle8:before{-webkit-animation-delay:-.5s;animation-delay:-.5s}.sk-fading-circle .sk-circle9:before{-webkit-animation-delay:-.4s;animation-delay:-.4s}.sk-fading-circle .sk-circle10:before{-webkit-animation-delay:-.3s;animation-delay:-.3s}.sk-fading-circle .sk-circle11:before{-webkit-animation-delay:-.2s;animation-delay:-.2s}.sk-fading-circle .sk-circle12:before{-webkit-animation-delay:-.1s;animation-delay:-.1s}@-webkit-keyframes sk-circleFadeDelay{0%,100%,39%{opacity:0}40%{opacity:1}}@keyframes sk-circleFadeDelay{0%,100%,39%{opacity:0}40%{opacity:1}}
+        </style>
+
         <noscript>
             <link rel="stylesheet" href="css/bootstrap.min.css">
             <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -61,7 +108,31 @@
     </head>
     <body class='loading'>
 
-        <div id="blur">
+        <div id="loader" tabindex="-1" class="modal container">
+            <div class="center-block">
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <h1 class="text-center">LOADING DATA PLEASE WAIT!</h1>
+                <p class="text-center">Depending on your connection speed this may take a minute or so.</p>
+                <div class="sk-fading-circle">
+                    <div class="sk-circle1 sk-circle"></div>
+                    <div class="sk-circle2 sk-circle"></div>
+                    <div class="sk-circle3 sk-circle"></div>
+                    <div class="sk-circle4 sk-circle"></div>
+                    <div class="sk-circle5 sk-circle"></div>
+                    <div class="sk-circle6 sk-circle"></div>
+                    <div class="sk-circle7 sk-circle"></div>
+                    <div class="sk-circle8 sk-circle"></div>
+                    <div class="sk-circle9 sk-circle"></div>
+                    <div class="sk-circle10 sk-circle"></div>
+                    <div class="sk-circle11 sk-circle"></div>
+                    <div class="sk-circle12 sk-circle"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="blur">
 
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -101,11 +172,10 @@
                     <p>&nbsp;</p>
                     <h3>Welcome</h3>
                     <p>The Positive Psychology Text Analyser allows you to easily add quantitative data to your research by allowing you to quickly compare any text to the <a href="http://www.wwbp.org" target="_blank" rel="noopener">World Wellbeing Project's</a> PERMA lexica in English &#x1F1EC;&#x1F1E7; / &#x1F1FA;&#x1F1F8; or <span lang="es">en Español &#x1F1EA;&#x1F1F8;</span>, as well as many of their other lexica. Simply copy any text (transcripts, essays, etc.) into the textbox below, choose any additional options, and press Start!</p>
-                    <p>It can also output your text as a tokenised CSV file. The tokeniser may have trouble with special characters and phrases such as HTML elements, web addresses and phone numbers. It is recommended that these are removed before tokenising if you wish to use that feature.</p>
                     <hr>
                     <div class="form-group">
                         <label for="textInput">1 - Paste text to be analysed here:</label>
-                        <p>(Your text is private and never transferred to, or saved on our server!)</p>
+                        <p>(Your text is kept private. Analysis takes place in your browser and data is never transferred to, or saved on our server!)</p>
                         <textarea class="form-control" placeholder="Paste text here..." id="textInput" rows="5" autofocus></textarea>
                     </div>
                     <hr>
@@ -113,7 +183,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">PERMA Lexica:
                             <div class="pull-right">
-                                <a tabindex="0" role="button" class="btn btn-link iFix" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" aria-label="info button: PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment." data-content="PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.">
+                                <a tabindex="0" role="button" class="btn btn-link help" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" aria-label="info button: PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment." data-content="PERMA are five domains of wellbeing: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                             </div>
@@ -134,7 +204,7 @@
                         </div>
                     </div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Additional Lexica:</div>
+                        <div class="panel-heading">Additional English Lexica:</div>
                         <div class="row panel-body">
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline">
@@ -217,19 +287,22 @@
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="CSVCheck"> Generate CSV file of tokens
                                 </label>
-                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="left" aria-label="info button: Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies will be replaced with '^'." data-content="Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies will be replaced with '^'.">
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies may be replaced with '^'." data-content="Generate a .csv file of individual tokens in your input. Note that because of limitations in generating this file type, apostrophies may be replaced with '^'.">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label id="alphaCSV" class="checkbox-inline disabled">
-                                    <input type="checkbox" id="alphaCheck" disabled> Sort tokens alphabetically
+                                    <input type="checkbox" id="alphaCheck" disabled> Sort CSV tokens alphabetically
                                 </label>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="incngram" checked> Include n-grams in token count
                                 </label>
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="Info button: Including n-grams in the wordcount will affect reported percentages as well as the age and gender predictions. If your results seem inaccurate, toggle this option." data-content="Including n-grams in the wordcount will affect reported percentages as well as the age and gender predictions. If your results seem inaccurate, toggle this option.">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -285,10 +358,10 @@
                                     <p><strong>Ratio: </strong><span id="ratio"></span></p>
                                     <p>&nbsp;</p>
                                     <div id="permaCharts" class="row">
-                                        <div class="col-xs-12 col-md-6">
+                                        <div class="col-xs-12 col-md-6 chart">
                                             <canvas id="permaPie" class="chart" width="400" height="400"></canvas>
                                         </div>
-                                        <div id="permaRadar" class="col-xs-12 col-md-6 hidden">
+                                        <div id="permaRadar" class="col-xs-12 col-md-6 chart hidden">
                                             <canvas id="permaRad" class="chart" width="400" height="400"></canvas>
                                         </div>
                                     </div>
@@ -449,7 +522,7 @@
                                         <p><strong>Total A/I matches: </strong><span id="affTotal"></span> items.</p>
                                         <p><strong>Scale:</strong> Affect: 1 = very negative, 5 = neutral, 9 = very positive. Intensity: 1 = neutral, 9 = high.</p>
                                         <div id="affCharts" class="row">
-                                            <div class="col-xs-12 col-md-6">
+                                            <div class="col-xs-12 col-md-6 chart">
                                                 <canvas id="affBubble" class="chart" width="400" height="400"></canvas>
                                             </div>
                                         </div>
@@ -560,7 +633,7 @@
                                     </table>
                                     <p>&nbsp;</p>
                                     <div id="fiveCharts" class="row">
-                                        <div class="col-xs-12 col-md-6">
+                                        <div class="col-xs-12 col-md-6 chart">
                                             <canvas id="fiveRadar" class="chart" width="400" height="400"></canvas>
                                         </div>
                                     </div>
@@ -636,32 +709,9 @@
             <p>For more projects like this, please visit <a href="http://www.phugh.es" target="_blank" rel="noopener">www.phugh.es</a>.</p>
         </footer>
 
-        <div id="loader" tabindex="-1" class="modal container">
-            <div class="center-block">
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <h1 class="text-center">LOADING DATA PLEASE WAIT!</h1>
-                <p class="text-center">Depending on your connection speed this may take a minute or so.</p>
-                <div class="sk-fading-circle">
-                    <div class="sk-circle1 sk-circle"></div>
-                    <div class="sk-circle2 sk-circle"></div>
-                    <div class="sk-circle3 sk-circle"></div>
-                    <div class="sk-circle4 sk-circle"></div>
-                    <div class="sk-circle5 sk-circle"></div>
-                    <div class="sk-circle6 sk-circle"></div>
-                    <div class="sk-circle7 sk-circle"></div>
-                    <div class="sk-circle8 sk-circle"></div>
-                    <div class="sk-circle9 sk-circle"></div>
-                    <div class="sk-circle10 sk-circle"></div>
-                    <div class="sk-circle11 sk-circle"></div>
-                    <div class="sk-circle12 sk-circle"></div>
-                </div>
-            </div>
-        </div>
-
         </div> <!-- end of blur -->
 
-        <script>
+        <script async>
             'use strict';
             function loadCss (filename) {
                 var l = document.createElement('link')
@@ -670,18 +720,32 @@
                 var h = document.getElementsByTagName('head')[0]
                 h.parentNode.insertBefore(l, h)
             }
+            loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css")
+            loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css")
+            loadCss("css/style.min.css")
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script defer>
+        // CDN fallback
+        if (!window.jQuery || !typeof $().emulateTransitionEnd == 'function') {
+            document.write('<script src="js/jquery-3.2.1.min.js"><\/script>')
+            document.write('<script src="js/bootstrap.min.js"><\/script>');
             loadCss("css/bootstrap.min.css")
             loadCss("css/bootstrap-theme.min.css")
-            loadCss("css/style.min.css")
+            document.write('<script src="js/he.min.js"><\/script>');
+            document.write('<script src="js/chart.min.js"><\/script>');
+        }
+        </script>
+        <script defer src="js/main.min.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/he/1.1.1/he.min.js"></script>
+        <script defer>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js', {scope: "./"}).then(function (registration, err) {
                     if (err) console.log('ServiceWorker registration failed: ', err)
                 })
             }
         </script>
-        <script src="js/jquery-3.2.1.slim.min.js"></script>
-        <script async src="js/bootstrap.min.js"></script>
-        <script src="js/chart.min.js"></script>
-        <script defer src="js/main.min.js"></script>
     </body>
 </html>

@@ -130,11 +130,65 @@ function optToggle() {
   }
 }
 
+/**
+ * Enable the extra lexica
+ * @function enableExtras
+ */
+function enableExtras() {
+  prospectCheck.disabled = false;
+  affectCheck.disabled = false;
+  bigFiveCheck.disabled = false;
+  ageCheck.disabled = false;
+  genderCheck.disabled = false;
+}
+
+/**
+ * Disable and uncheck extra lexica
+ * @function disableExtras
+ */
+function disableExtras() {
+  prospectCheck.checked = false;
+  prospectCheck.disabled = true;
+  affectCheck.checked = false;
+  affectCheck.disabled = true;
+  optimismCheck.checked = false; // no need to disable as handled by above
+  bigFiveCheck.checked = false;
+  bigFiveCheck.disabled = true;
+  ageCheck.checked = false;
+  ageCheck.disabled = true;
+  genderCheck.checked = false;
+  genderCheck.disabled = true;
+}
+/**
+ * Set and enable the weight thresholds
+ * @function enableWeights
+ * @param  {number} min
+ * @param  {number} max
+ */
+function enableWeights(min, max) {
+  minWeight.disabled = false;
+  maxWeight.disabled = false;
+  minWeight.value = min;
+  maxWeight.value = max;
+  minWeight.min = min;
+  maxWeight.max = max;
+}
+
+/**
+ * Disable the weight thresholds
+ * @function disableWeights
+ */
+function disableWeights() {
+  minWeight.disabled = true;
+  maxWeight.disabled = true;
+}
+
 /* #################### *
  * Main Functions       *
  * #################### */
 
 /**
+ * Return an array of n-grams from tokens
  * @function getNgrams
  * @param  {Array} arr array of tokens
  * @param  {Number} n number of grams
@@ -209,7 +263,7 @@ function loadLexicon(file, obj, loader) {
 }
 
 /**
-* tokenise a string into an array
+* Tokenise a string into an array
 * @function tokenise
 * @param {string} str input string
 * @return {Array} an array of tokens
@@ -217,6 +271,7 @@ function loadLexicon(file, obj, loader) {
 function tokenise(str) {
   // adapted from http://wwbp.org/downloads/public_data/happierfuntokenizing.zip
   var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi') // eslint-disable-line
+  str = he.decode(str);
   return str.match(reg);
 }
 
@@ -247,8 +302,7 @@ function sortMatches(arr, obj) {
     var i = 0;
     var data = obj[cat];
     for (var word in data) {
-      if (!data.hasOwnProperty(word)) continue;
-      if (arr.indexOf(word) > -1) {
+      if (data.hasOwnProperty(word) && arr.indexOf(word) > -1) {
         var weight = data[word];
         if ((permaCat && dd) && (weight < min || weight > max)) continue;
         var match = [];
@@ -368,21 +422,19 @@ function calcLex(obj, wc, int, enc) {
 
 /**
  * @function main
- * @return {type} {description}
  */
 function main() {
   // display loading screen
   body.classList.add('loading');
 
   // get inputted text
-  var textarea = document.getElementById('textInput');
-  var text = textarea.value.toString().trim().toLowerCase();
+  var text = document.getElementById('textInput').value.toString().trim().toLowerCase();
 
   // check that there is actually text there
   if (text.length === 0) {
     body.classList.remove('loading');
     window.alert('Input box is empty!');
-    return false;
+    return;
   }
 
   // clear all the canvas elements
@@ -391,8 +443,9 @@ function main() {
   // create array of individual words
   var tokens = tokenise(text);
 
-  // get true word count
+  // get true word count and token count
   var trueCount = text.replace(/\s+/gi, ' ').split(' ').length;
+  var wordCount = tokens.length;
 
   // make the CSV file if selected
   if (document.getElementById('CSVCheck').checked) {
@@ -402,8 +455,6 @@ function main() {
     a.setAttribute('download', 'PPTA_Tokens_' + Date.now().toString() + '.csv');
     a.click();
   }
-
-  var wordCount = tokens.length;
 
   // Add ngrams after we do CSV
   var ngramSelect = document.getElementById('ngramSelect').value;
@@ -418,6 +469,7 @@ function main() {
     }
   }
 
+  // amend token count to include n-grams if requested
   if (document.getElementById('incngram').checked) {
     wordCount = tokens.length;
   }
@@ -441,7 +493,18 @@ function main() {
   PERMA.counts.TOTAL = getWords(PERMA, '').length;
 
   // intercept values
-  var permaInt;
+  var permaInt = {
+    POS_P: 0,
+    POS_E: 0,
+    POS_R: 0,
+    POS_M: 0,
+    POS_A: 0,
+    NEG_P: 0,
+    NEG_E: 0,
+    NEG_R: 0,
+    NEG_M: 0,
+    NEG_A: 0,
+  };
   if (s === '4') {
     permaInt = {
       POS_P: 2.675173871,
@@ -454,19 +517,6 @@ function main() {
       NEG_R: 1.782788984,
       NEG_M: 1.52890284,
       NEG_A: 2.482131179,
-    };
-  } else {
-    permaInt = {
-      POS_P: 0,
-      POS_E: 0,
-      POS_R: 0,
-      POS_M: 0,
-      POS_A: 0,
-      NEG_P: 0,
-      NEG_E: 0,
-      NEG_R: 0,
-      NEG_M: 0,
-      NEG_A: 0,
     };
   }
 
@@ -485,176 +535,6 @@ function main() {
 
   // create printable array of words/tokens
   var permaPrint = handleDuplicates(PERMA);
-
-  // do the same for prospection
-  var PROSP = {};
-  var prospLV = {};
-  var prospPrint;
-  if (prospectCheck.checked) {
-    PROSP = sortMatches(tokens, prospLex);
-    PROSP.counts.TOTAL = getWords(PROSP, '').length;
-    prospLV.PAST = calcLex(PROSP.PAST, wordCount, (-0.649406376419), 'binary');
-    prospLV.PRESENT = calcLex(PROSP.PRESENT, wordCount, 0.236749577324, 'binary');
-    prospLV.FUTURE = calcLex(PROSP.FUTURE, wordCount, (-0.570547567181), 'binary');
-    prospPrint = handleDuplicates(PROSP);
-  }
-
-  // do the same for affect
-  var AFF = {};
-  var affLV = {};
-  var affPrint;
-  if (affectCheck.checked) {
-    AFF = sortMatches(tokens, affLex);
-    affLV.AFFECT = calcLex(AFF.AFFECT, wordCount, 5.037104721, 'binary');
-    affLV.INTENSITY = calcLex(AFF.INTENSITY, wordCount, 2.399762631, 'binary');
-    affPrint = handleDuplicates(AFF);
-
-    if (affLV.AFFECT > 9) affLV.AFFECT = 9.000;
-    if (affLV.INTENSITY > 9) affLV.INTENSITY = 9.000;
-    if (affLV.AFFECT < 1) affLV.AFFECT = 1.000;
-    if (affLV.INTENSITY < 1) affLV.INTENSITY = 1.000;
-
-    var bubData = {
-      datasets: [
-        {
-          label: 'Affect / Intensity',
-          data: [
-            {
-              x: affLV.AFFECT,
-              y: affLV.INTENSITY,
-              r: 5,
-            },
-          ],
-          backgroundColor: '#FF6384',
-          hoverBackgroundColor: '#FF6384',
-        }],
-    };
-
-    var options = {
-      scales: {
-        yAxes: [{
-          ticks: {
-            max: 9,
-            min: 1,
-            stepSize: 1,
-          },
-          scaleLabel: {
-            display: true,
-            labelString: 'Intensity',
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            max: 9,
-            min: 1,
-            stepSize: 1,
-          },
-          scaleLabel: {
-            display: true,
-            labelString: 'Affect',
-          },
-        }],
-      },
-    };
-
-    var ctx4 = document.getElementById('affBubble').getContext('2d');
-    affChart = new Chart(ctx4, {
-      type: 'bubble',
-      data: bubData,
-      options: options,
-    });
-  }
-
-  // do the same for optimism
-  var OPT = {};
-  var optLV = {};
-  var optPrint;
-  if (optimismCheck.checked) {
-    var future = getWords(PROSP, 'FUTURE');
-    OPT = sortMatches(future, affLex);
-    optLV = calcLex(OPT.AFFECT, wordCount, 5.037104721, 'binary');
-    optPrint = handleDuplicates(OPT);
-  }
-
-  // do the same for big five
-  var FIVE = {};
-  var fiveLV = {};
-  var fivePrint;
-  if (bigFiveCheck.checked) {
-    FIVE = sortMatches(tokens, big5Lex);
-    FIVE.counts.TOTAL = getWords(FIVE, '').length;
-    fiveLV.O = calcLex(FIVE.O, wordCount, 0, 'binary');
-    fiveLV.C = calcLex(FIVE.C, wordCount, 0, 'binary');
-    fiveLV.E = calcLex(FIVE.E, wordCount, 0, 'binary');
-    fiveLV.A = calcLex(FIVE.A, wordCount, 0, 'binary');
-    fiveLV.N = calcLex(FIVE.N, wordCount, 0, 'binary');
-    fivePrint = handleDuplicates(FIVE);
-
-    var fiveData = {
-      labels: [
-        'Openness',
-        'Conscientiousness',
-        'Extraversion',
-        'Agreeableness',
-        'Neuroticism',
-      ],
-      datasets: [
-        {
-          label: 'Big Five Personality Traits',
-          backgroundColor: 'rgba(119, 221, 119,0.2)',
-          borderColor: '#77dd77',
-          pointBackgroundColor: 'rgba(179,181,198,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#77dd77',
-          data: [
-            fiveLV.O,
-            fiveLV.C,
-            fiveLV.E,
-            fiveLV.A,
-            fiveLV.N,
-          ],
-        },
-        {
-          label: 'Zero',
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#000',
-          pointBackgroundColor: 'rgba(0,0,0,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#000',
-          data: [0, 0, 0, 0, 0],
-        },
-      ],
-    };
-
-    var ctx3 = document.getElementById('fiveRadar').getContext('2d');
-    fiveChart = new Chart(ctx3, {
-      type: 'radar',
-      data: fiveData,
-    });
-  }
-
-  // do the same for age
-  var AGE = {};
-  var ageLV = {};
-  if (ageCheck.checked) {
-    AGE = sortMatches(tokens, ageLex);
-    ageLV = calcLex(AGE.AGE, wordCount, 23.2188604687, 'freq').toFixed(2);
-  }
-
-  // do the same for gender
-  var GENDER = {};
-  var genderLV = {};
-  if (genderCheck.checked) {
-    GENDER = sortMatches(tokens, genderLex);
-    genderLV = calcLex(GENDER.GENDER, wordCount, (-0.06724152), 'freq');
-  }
-
-  // calculate PERMA percentages
-  var neutralWords = (wordCount - PERMA.counts.TOTAL);
-  var matchCent = ((PERMA.counts.TOTAL / wordCount) * 100).toFixed(2);
-  var neutralCent = ((neutralWords / wordCount) * 100).toFixed(2);
 
   // make charts
   var ctx1 = document.getElementById('permaPie').getContext('2d');
@@ -739,8 +619,167 @@ function main() {
     data: radardata,
   });
 
-  // calculate ratio
-  var PERMARatioStatement = '';
+  // do the same for prospection
+  if (prospectCheck.checked) {
+    var PROSP = sortMatches(tokens, prospLex);
+    PROSP.counts.TOTAL = getWords(PROSP, '').length;
+    var prospLV = {
+      PAST: calcLex(PROSP.PAST, wordCount, (-0.649406376419), 'binary'),
+      PRESENT: calcLex(PROSP.PRESENT, wordCount, 0.236749577324, 'binary'),
+      FUTURE: calcLex(PROSP.FUTURE, wordCount, (-0.570547567181), 'binary'),
+    };
+    var prospPrint = handleDuplicates(PROSP);
+  }
+
+  // do the same for affect
+  if (affectCheck.checked) {
+    var AFF = sortMatches(tokens, affLex);
+    var affLV = {
+      AFFECT: calcLex(AFF.AFFECT, wordCount, 5.037104721, 'binary'),
+      INTENSITY: calcLex(AFF.INTENSITY, wordCount, 2.399762631, 'binary'),
+    };
+    var affPrint = handleDuplicates(AFF);
+
+    if (affLV.AFFECT > 9) affLV.AFFECT = 9.000;
+    if (affLV.INTENSITY > 9) affLV.INTENSITY = 9.000;
+    if (affLV.AFFECT < 1) affLV.AFFECT = 1.000;
+    if (affLV.INTENSITY < 1) affLV.INTENSITY = 1.000;
+
+    var bubData = {
+      datasets: [
+        {
+          label: 'Affect / Intensity',
+          data: [
+            {
+              x: affLV.AFFECT,
+              y: affLV.INTENSITY,
+              r: 5,
+            },
+          ],
+          backgroundColor: '#FF6384',
+          hoverBackgroundColor: '#FF6384',
+        }],
+    };
+
+    var options = {
+      scales: {
+        yAxes: [{
+          ticks: {
+            max: 9,
+            min: 1,
+            stepSize: 1,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Intensity',
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            max: 9,
+            min: 1,
+            stepSize: 1,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Affect',
+          },
+        }],
+      },
+    };
+
+    var ctx4 = document.getElementById('affBubble').getContext('2d');
+    affChart = new Chart(ctx4, {
+      type: 'bubble',
+      data: bubData,
+      options: options,
+    });
+  }
+
+  // do the same for optimism
+  if (optimismCheck.checked) {
+    var future = getWords(PROSP, 'FUTURE');
+    var OPT = sortMatches(future, affLex);
+    var optLV = calcLex(OPT.AFFECT, wordCount, 5.037104721, 'binary');
+    var optPrint = handleDuplicates(OPT);
+  }
+
+  // do the same for big five
+  if (bigFiveCheck.checked) {
+    var FIVE = sortMatches(tokens, big5Lex);
+    FIVE.counts.TOTAL = getWords(FIVE, '').length;
+    var fiveLV = {};
+    fiveLV.O = calcLex(FIVE.O, wordCount, 0, 'binary');
+    fiveLV.C = calcLex(FIVE.C, wordCount, 0, 'binary');
+    fiveLV.E = calcLex(FIVE.E, wordCount, 0, 'binary');
+    fiveLV.A = calcLex(FIVE.A, wordCount, 0, 'binary');
+    fiveLV.N = calcLex(FIVE.N, wordCount, 0, 'binary');
+    var fivePrint = handleDuplicates(FIVE);
+
+    var fiveData = {
+      labels: [
+        'Openness',
+        'Conscientiousness',
+        'Extraversion',
+        'Agreeableness',
+        'Neuroticism',
+      ],
+      datasets: [
+        {
+          label: 'Big Five Personality Traits',
+          backgroundColor: 'rgba(119, 221, 119,0.2)',
+          borderColor: '#77dd77',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#77dd77',
+          data: [
+            fiveLV.O,
+            fiveLV.C,
+            fiveLV.E,
+            fiveLV.A,
+            fiveLV.N,
+          ],
+        },
+        {
+          label: 'Zero',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#000',
+          pointBackgroundColor: 'rgba(0,0,0,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#000',
+          data: [0, 0, 0, 0, 0],
+        },
+      ],
+    };
+
+    var ctx3 = document.getElementById('fiveRadar').getContext('2d');
+    fiveChart = new Chart(ctx3, {
+      type: 'radar',
+      data: fiveData,
+    });
+  }
+
+  // do the same for age
+  if (ageCheck.checked) {
+    var AGE = sortMatches(tokens, ageLex);
+    var ageLV = calcLex(AGE.AGE, wordCount, 23.2188604687, 'freq').toFixed(2);
+  }
+
+  // do the same for gender
+  if (genderCheck.checked) {
+    var GENDER = sortMatches(tokens, genderLex);
+    var genderLV = calcLex(GENDER.GENDER, wordCount, (-0.06724152), 'freq');
+  }
+
+  // calculate PERMA percentages
+  var neutralWords = (wordCount - PERMA.counts.TOTAL);
+  var matchCent = ((PERMA.counts.TOTAL / wordCount) * 100).toFixed(2);
+  var neutralCent = ((neutralWords / wordCount) * 100).toFixed(2);
+
+  // calculate PERMA ratio
+  var PERMARatioStatement;
   if (PERMA.counts.POS_T === 0 || PERMA.counts.NEG_T === 0) {
     if (PERMA.counts.POS_T < PERMA.counts.NEG_T) {
       PERMARatioStatement = 'Of the matches, 100% were negative PERMA matches.';
@@ -823,6 +862,20 @@ function main() {
     document.getElementById('optLex').textContent = optLV;
     document.getElementById('optPrint').textContent = optPrint.AFFECT.join(', ');
   }
+  if (bigFiveCheck.checked) {
+    document.getElementById('fiveRes').classList.remove('hidden');
+    document.getElementById('fiveTotal').textContent = FIVE.counts.TOTAL;
+    document.getElementById('oLex').textContent = fiveLV.O;
+    document.getElementById('cLex').textContent = fiveLV.C;
+    document.getElementById('eLex').textContent = fiveLV.E;
+    document.getElementById('aLex').textContent = fiveLV.A;
+    document.getElementById('nLex').textContent = fiveLV.N;
+    document.getElementById('oPrint').textContent = fivePrint.O.join(', ');
+    document.getElementById('cPrint').textContent = fivePrint.C.join(', ');
+    document.getElementById('ePrint').textContent = fivePrint.E.join(', ');
+    document.getElementById('aPrint').textContent = fivePrint.A.join(', ');
+    document.getElementById('nPrint').textContent = fivePrint.N.join(', ');
+  }
   if (ageCheck.checked) {
     document.getElementById('ageRes').classList.remove('hidden');
     document.getElementById('predAge').textContent = ageLV;
@@ -838,28 +891,14 @@ function main() {
     document.getElementById('predGen').textContent = g;
     document.getElementById('genLex').textContent = genderLV;
   }
-  if (bigFiveCheck.checked) {
-    document.getElementById('fiveRes').classList.remove('hidden');
-    document.getElementById('fiveTotal').textContent = FIVE.counts.TOTAL;
-    document.getElementById('oLex').textContent = fiveLV.O;
-    document.getElementById('cLex').textContent = fiveLV.C;
-    document.getElementById('eLex').textContent = fiveLV.E;
-    document.getElementById('aLex').textContent = fiveLV.A;
-    document.getElementById('nLex').textContent = fiveLV.N;
-    document.getElementById('oPrint').textContent = fivePrint.O.join(', ');
-    document.getElementById('cPrint').textContent = fivePrint.C.join(', ');
-    document.getElementById('ePrint').textContent = fivePrint.E.join(', ');
-    document.getElementById('aPrint').textContent = fivePrint.A.join(', ');
-    document.getElementById('nPrint').textContent = fivePrint.N.join(', ');
-  }
 
   // remove loading screen
   document.getElementById('noContent').classList.add('hidden');
   document.getElementById('outputSection').classList.remove('hidden');
-  document.getElementById('results').classList.add('active');
   document.getElementById('inputSection').classList.remove('active');
-  document.getElementById('rTab').classList.add('active');
+  document.getElementById('results').classList.add('active');
   document.getElementById('iTab').classList.remove('active');
+  document.getElementById('rTab').classList.add('active');
   body.classList.remove('loading');
   window.scrollTo(0, 0);
 }
@@ -871,46 +910,32 @@ document.addEventListener('DOMContentLoaded', function loaded() {
   // event listeners
   document.getElementById('startButton').addEventListener('click', main, false);
 
-  setTimeout(function() {
-    $('[data-toggle="popover"]').popover();
-    $('.collapse').collapse();
-    $('.alert').alert();
-  }, 600);
-
   permaSelect.addEventListener('change', function() {
     var i = permaSelect.value;
     if (i === '1') {
       if (lexStatus['dLoaded'] === false) {
         loadLexicon('json/perma/permaV3_dd.json', permaDLex, 'dLoaded');
       }
-      minWeight.disabled = false;
-      maxWeight.disabled = false;
-      minWeight.value = -0.38;
-      maxWeight.value = 0.86;
-      minWeight.min = -0.38;
-      maxWeight.max = 0.86;
+      enableWeights(-0.38, 0.86);
+      enableExtras();
     } else if (i === '2') {
       if (lexStatus['mLoaded'] === false) {
         loadLexicon('json/perma/permaV3_manual.json', permaMLex, 'mLoaded');
       }
-      minWeight.disabled = true;
-      maxWeight.disabled = true;
+      disableWeights();
+      enableExtras();
     } else if (i === '3') {
       if (lexStatus['tLoaded'] === false) {
         loadLexicon('json/perma/permaV3_manual_tsp75.json', permaTLex, 'tLoaded');
       }
-      minWeight.disabled = true;
-      maxWeight.disabled = true;
+      disableWeights();
+      enableExtras();
     } else if (i === '4') {
       if (lexStatus['sLoaded'] === false) {
         loadLexicon('json/perma/dd_spermaV3.json', permaSLex, 'sLoaded');
       }
-      minWeight.disabled = false;
-      maxWeight.disabled = false;
-      minWeight.value = -0.86;
-      maxWeight.value = 3.35;
-      minWeight.min = -0.86;
-      maxWeight.max = 3.35;
+      enableWeights(-0.86, 3.35);
+      disableExtras();
     } else {
       console.error('#permaSelect: invalid selection. Defaulting to 1.');
       permaSelect.value = '1';
@@ -931,18 +956,6 @@ document.addEventListener('DOMContentLoaded', function loaded() {
     optToggle();
   }, {passive: true});
 
-  document.getElementById('CSVCheck').addEventListener('click', function() {
-    var alphaCSV = document.getElementById('alphaCSV');
-    var alphaCSVCheck = document.getElementById('alphaCheck');
-    if (alphaCSV.classList.contains('disabled')) {
-      alphaCSV.classList.remove('disabled');
-      alphaCSVCheck.disabled = false;
-    } else {
-      alphaCSV.classList.add('disabled');
-      alphaCSVCheck.disabled = true;
-    }
-  }, {passive: true});
-
   ageCheck.addEventListener('click', function() {
     if (ageCheck.checked && lexStatus['eLoaded'] === false) {
       loadLexicon('json/age/age.json', ageLex, 'eLoaded');
@@ -961,6 +974,25 @@ document.addEventListener('DOMContentLoaded', function loaded() {
     }
   }, {passive: true, once: true});
 
+  document.getElementById('CSVCheck').addEventListener('click', function() {
+    var alphaCSV = document.getElementById('alphaCSV');
+    var alphaCSVCheck = document.getElementById('alphaCheck');
+    if (alphaCSV.classList.contains('disabled')) {
+      alphaCSV.classList.remove('disabled');
+      alphaCSVCheck.disabled = false;
+    } else {
+      alphaCSV.classList.add('disabled');
+      alphaCSVCheck.disabled = true;
+    }
+  }, {passive: true});
+
+  // activate material elements
+  setTimeout(function() {
+    $('[data-toggle="popover"]').popover();
+    $('.collapse').collapse();
+    $('.alert').alert();
+  }, 100);
+
   /*
   * IE10 viewport hack for Surface/desktop Windows 8 bug
   * Copyright 2014-2015 Twitter, Inc.
@@ -975,8 +1007,4 @@ document.addEventListener('DOMContentLoaded', function loaded() {
     );
     document.querySelector('head').appendChild(msViewportStyle);
   }
-
-  // Chart.js globals
-  Chart.defaults.global.responsive = false;
-  Chart.defaults.global.maintainAspectRatio = false;
 }, {passive: true, once: true});
