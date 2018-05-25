@@ -14,6 +14,7 @@ var affLex = {};
 var ageLex = {};
 var genderLex = {};
 var big5Lex = {};
+var darkLex = {};
 
 // keep track of which lexica are loaded into memory
 var lexStatus = {
@@ -26,6 +27,7 @@ var lexStatus = {
   'gLoaded': false, // is the gender lexicon loaded?
   'eLoaded': false, // is the age lexicon loaded?
   '5Loaded': false, // is the big-five lexicon loaded?
+  'zLoaded': false, // is the dark triad lexicon loaded?
 };
 
 // cache elements
@@ -35,7 +37,7 @@ var affectCheck = document.getElementById('affectCheck');
 var optimismCheck = document.getElementById('optimismCheck');
 var bigFiveCheck = document.getElementById('bigFiveCheck');
 var ageCheck = document.getElementById('ageCheck');
-var genderCheck = document.getElementById('genderCheck');
+var darkTriadCheck = document.getElementById('darkTriadCheck');
 var minWeight = document.getElementById('minWeight');
 var maxWeight = document.getElementById('maxWeight');
 var permaSelect = document.getElementById('permaSelect');
@@ -139,7 +141,6 @@ function enableExtras() {
   affectCheck.disabled = false;
   bigFiveCheck.disabled = false;
   ageCheck.disabled = false;
-  genderCheck.disabled = false;
 }
 
 /**
@@ -156,9 +157,8 @@ function disableExtras() {
   bigFiveCheck.disabled = true;
   ageCheck.checked = false;
   ageCheck.disabled = true;
-  genderCheck.checked = false;
-  genderCheck.disabled = true;
 }
+
 /**
  * Set and enable the weight thresholds
  * @function enableWeights
@@ -271,7 +271,15 @@ function loadLexicon(file, obj, loader) {
 function tokenise(str) {
   // adapted from http://wwbp.org/downloads/public_data/happierfuntokenizing.zip
   var reg = new RegExp(/(?:(?:\+?[01][\-\s.]*)?(?:[\(]?\d{3}[\-\s.\)]*)?\d{3}[\-\s.]*\d{4})|(?:[<>]?[:;=8>][\-o\*\']?[\)\]\(\[dDpPxX\/\:\}\{@\|\\]|[\)\]\(\[dDpPxX\/\:\}\{@\|\\][\-o\*\']?[:;=8<][<>]?|<3|\(?\(?\#?\(?\(?\#?[>\-\^\*\+o\~][\_\.\|oO\,][<\-\^\*\+o\~][\#\;]?\)?\)?)|(?:(?:http[s]?\:\/\/)?(?:[\w\_\-]+\.)+(?:com|net|gov|edu|info|org|ly|be|gl|co|gs|pr|me|cc|us|gd|nl|ws|am|im|fm|kr|to|jp|sg))|(?:http[s]?\:\/\/)|(?:\[[a-z_]+\])|(?:\/\w+\?(?:\;?\w+\=\w+)+)|<[^>]+>|(?:@[\w_]+)|(?:\#+[\w_]+[\w\'_\-]*[\w_]+)|(?:[a-z][a-z'\-_]+[a-z])|(?:[+\-]?\d+[,\/.:-]\d+[+\-]?)|(?:[\w_]+)|(?:\.(?:\s*\.){1,})|(?:\S)/, 'gi') // eslint-disable-line
-  str = he.decode(str);
+  if (document.getElementById('cleanText').checked) {
+    str = he.decode(str); // decode HTML entities
+    str.replace(/[^\x00-\x7F]/g, ''); // remove non-ascii characters  
+    str = str.replace(/\s\s+/g, ' '); // remove multiple spaces
+    str = str.replace(/[\u2018\u2019]/g, '\''); // fix smart apost.
+    str = str.replace(/[\u201C\u201D]/g, '"'); // fix smartquotes
+    str = str.replace(/[\u2013\u2014]/g, '-'); // fix em-dashes
+    str = str.replace(/[\u2026]/g, '...'); // fix ellipses
+  }
   return str.match(reg);
 }
 
@@ -407,11 +415,11 @@ function calcLex(obj, wc, int, enc) {
   for (var cat in obj) {
     if (!obj.hasOwnProperty(cat)) continue;
     var word = obj[cat][0][0];
-    var weight = Number(obj[cat][0][1]);
+    var weight = obj[cat][0][1];
     var count = 1; // if the word isn't an array it means it appears once only
     if (Array.isArray(word)) count = word.length;
     if (enc === 'freq') {
-      lex += ((count / wc) * weight);
+      lex += (count / wc) * weight;
     } else {
       lex += weight;
     }
@@ -640,10 +648,10 @@ function main() {
     };
     var affPrint = handleDuplicates(AFF);
 
-    if (affLV.AFFECT > 9) affLV.AFFECT = 9.000;
+    /* if (affLV.AFFECT > 9) affLV.AFFECT = 9.000;
     if (affLV.INTENSITY > 9) affLV.INTENSITY = 9.000;
     if (affLV.AFFECT < 1) affLV.AFFECT = 1.000;
-    if (affLV.INTENSITY < 1) affLV.INTENSITY = 1.000;
+    if (affLV.INTENSITY < 1) affLV.INTENSITY = 1.000; */
 
     var bubData = {
       datasets: [
@@ -761,14 +769,23 @@ function main() {
     });
   }
 
-  // do the same for age
+  // do the same for dark triad
+  if (darkTriadCheck.checked) {
+    var DARK = sortMatches(tokens, darkLex);
+    DARK.counts.TOTAL = getWords(DARK, '').length;
+    var darkLV = {
+      darktriad: calcLex(DARK.darktriad, wordCount, 0.632024388686, 'binary'),
+      machiavellianism: calcLex(DARK.machiavellianism, wordCount, 0.596743883684, 'binary'),
+      narcissism: calcLex(DARK.narcissism, wordCount, 0.714881303759, 'binary'),
+      psychopathy: calcLex(DARK.psychopathy, wordCount, 0.48892463341, 'binary'),
+    };
+    var darkPrint = handleDuplicates(DARK);
+  }
+
+  // do the same for age & gender
   if (ageCheck.checked) {
     var AGE = sortMatches(tokens, ageLex);
     var ageLV = calcLex(AGE.AGE, wordCount, 23.2188604687, 'freq').toFixed(2);
-  }
-
-  // do the same for gender
-  if (genderCheck.checked) {
     var GENDER = sortMatches(tokens, genderLex);
     var genderLV = calcLex(GENDER.GENDER, wordCount, (-0.06724152), 'freq');
   }
@@ -876,11 +893,25 @@ function main() {
     document.getElementById('aPrint').textContent = fivePrint.A.join(', ');
     document.getElementById('nPrint').textContent = fivePrint.N.join(', ');
   }
+  if (darkTriadCheck.checked) {
+    document.getElementById('darkRes').classList.remove('hidden');
+    document.getElementById('darkTotal').textContent = DARK.counts.TOTAL;
+    document.getElementById('darkTriad').textContent = DARK.counts.darktriad;
+    document.getElementById('darkMach').textContent = DARK.counts.machiavellianism;
+    document.getElementById('darkNarc').textContent = DARK.counts.narcissism;
+    document.getElementById('darkPsych').textContent = DARK.counts.psychopathy;
+    document.getElementById('triLex').textContent = darkLV.darktriad;
+    document.getElementById('machLex').textContent = darkLV.machiavellianism;
+    document.getElementById('narcLex').textContent = darkLV.narcissism;
+    document.getElementById('psychLex').textContent = darkLV.psychopathy;
+    document.getElementById('triad').textContent = darkPrint.darktriad.join(', ');
+    document.getElementById('machi').textContent = darkPrint.machiavellianism.join(', ');
+    document.getElementById('narci').textContent = darkPrint.narcissism.join(', ');
+    document.getElementById('psycho').textContent = darkPrint.psychopathy.join(', ');
+  }
   if (ageCheck.checked) {
     document.getElementById('ageRes').classList.remove('hidden');
     document.getElementById('predAge').textContent = ageLV;
-  }
-  if (genderCheck.checked) {
     document.getElementById('genRes').classList.remove('hidden');
     var g = 'Unknown';
     if (genderLV < 0) {
@@ -957,13 +988,9 @@ document.addEventListener('DOMContentLoaded', function loaded() {
   }, {passive: true});
 
   ageCheck.addEventListener('click', function() {
-    if (ageCheck.checked && lexStatus['eLoaded'] === false) {
+    if (ageCheck.checked && lexStatus['eLoaded'] === false && 
+        lexStatus['gLoaded'] === false) {
       loadLexicon('json/age/age.json', ageLex, 'eLoaded');
-    }
-  }, {passive: true, once: true});
-
-  genderCheck.addEventListener('click', function() {
-    if (genderCheck.checked && lexStatus['gLoaded'] === false) {
       loadLexicon('json/gender/gender.json', genderLex, 'gLoaded');
     }
   }, {passive: true, once: true});
@@ -971,6 +998,12 @@ document.addEventListener('DOMContentLoaded', function loaded() {
   bigFiveCheck.addEventListener('click', function() {
     if (bigFiveCheck.checked && lexStatus['5Loaded'] === false) {
       loadLexicon('json/bigfive/bigfive.json', big5Lex, '5Loaded');
+    }
+  }, {passive: true, once: true});
+
+  darkTriadCheck.addEventListener('click', function() {
+    if (darkTriadCheck.checked && lexStatus['zLoaded'] === false) {
+      loadLexicon('json/dark/darktriad.json', darkLex, 'zLoaded');
     }
   }, {passive: true, once: true});
 

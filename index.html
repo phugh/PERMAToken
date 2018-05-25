@@ -2,10 +2,10 @@
 <html lang="en-GB">
     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Positive Psychology Text Analyser | Peter Hughes</title>
-        <meta name="description" content="Quantitative text analysis against various positive psychology lexica.">
+        <meta name="description" content="Quantitative text analysis against various positive psychology lexica." />
         <meta name="author" content="Peter Hughes - www.phugh.es">
 
         <meta name="theme-color" content="#455A64">
@@ -23,7 +23,7 @@
         <meta property="og:type" content="website"/>
         <meta property="og:title" content="Positive Psychology Text Analyser"/>
         <meta property="og:description" content="Quantitative text analysis against various positive psychology lexica."/>
-        <meta property="og:image" content="http://www.phugh.es/tech/permatoken/img/banner.png"/>
+        <meta property="og:image" content="https://www.phugh.es/tech/permatoken/img/banner.png"/>
         <meta property="og:image:secure_url" content="https://www.phugh.es/tech/permatoken/img/banner.png"/>
         <meta property="og:image:width" content="2400"/>
         <meta property="og:image:height" content="1260"/>
@@ -239,13 +239,16 @@
                                 </a>
                             </div>
                             <div class="col-xs-12 col-md-4">
-                                <label class="checkbox-inline ">
-                                    <input type="checkbox" id="ageCheck"> Predict Age
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="darkTriadCheck"> Analyse "Dark Triad" Personality Traits
                                 </label>
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Analyses the 'Dark Triad' personality traits: narcissism, Machiavellianism, and psychopathy." data-content="Analyses the 'Dark Triad' personality traits: narcissism, Machiavellianism, and psychopathy.">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                </a>
                             </div>
                             <div class="col-xs-12 col-md-4">
-                                <label class="checkbox-inline ">
-                                    <input type="checkbox" id="genderCheck"> Predict Gender
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="ageCheck"> Predict Age &amp; Gender
                                 </label>
                             </div>
                         </div>
@@ -304,6 +307,14 @@
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 </a>
                             </div>
+                            <div class="col-xs-12 col-md-4">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="cleanText" checked> Perform text cleaning
+                                </label>
+                                <a tabindex="0" role="button" class="btn btn-link btn-xs" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="right" aria-label="info button: Decode HTML entities, remove multiple spaces and non-ASCII characters from the input text." data-content="Decode HTML entities, remove multiple spaces and non-ASCII characters from the input text.">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -313,6 +324,7 @@
                             </button>
                         </div>
                     </div>
+                    <hr>
                 </div>
 
                 <!-- Output Section -->
@@ -354,15 +366,19 @@
                                     </tbody>
                                 </table>
                                 <p>&nbsp;</p>
-                                <div class="panel-body container">
+                                <div class="panel-body">
                                     <p><strong>Ratio: </strong><span id="ratio"></span></p>
                                     <p>&nbsp;</p>
                                     <div id="permaCharts" class="row">
-                                        <div class="col-xs-12 col-md-6 chart">
-                                            <canvas id="permaPie" class="chart" width="400" height="400"></canvas>
+                                        <div class="col-xs-12 col-md-6">
+                                            <div class="chart center-align">
+                                                <canvas id="permaPie" class="chart"></canvas>
+                                            </div>
                                         </div>
-                                        <div id="permaRadar" class="col-xs-12 col-md-6 chart hidden">
-                                            <canvas id="permaRad" class="chart" width="400" height="400"></canvas>
+                                        <div id="permaRadar" class="col-xs-12 col-md-6 hidden">
+                                            <div class="chart center-align">
+                                                <canvas id="permaRad" class="chart" width="400" height="400"></canvas>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -658,6 +674,66 @@
                             </div>
                             <hr>
                         </div>
+                        <div id="darkRes" class="hidden">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="h98">
+                                    <h3 class="panel-title">
+                                        <a class="collapsed" role="button" aria-label="Dark Triad results panel" data-toggle="collapse" data-parent="#outputSection" href="#res98" aria-expanded="false" aria-controls="res98">Dark Triad Results  <span class="caret"></span></a>
+                                    </h3>
+                                </div>
+                                <div id="res98" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h98">
+                                    <div class="panel-body container">
+                                        <p><strong>Total dark triad matches: </strong><span id="darkTotal"></span> items.</p>
+                                        <p><strong>General triad matches: </strong><span id="darkTriad"></span> items.</p>
+                                        <p><strong>Machiavellianism matches: </strong><span id="darkMach"></span> items.</p>
+                                        <p><strong>Narcissism matches: </strong><span id="darkNarc"></span> items.</p>
+                                        <p><strong>Psychopathy matches: </strong><span id="darkPsych"></span> items.</p>
+                                    </div>
+                                    <table id="dtlex" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Dark Triad</th>
+                                            <th>Lexical Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>General</td>
+                                            <td><span id="triLex"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Machiavellianism</td>
+                                            <td><span id="machLex"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Narcissism</td>
+                                            <td><span id="narcLex"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Psychopathy</td>
+                                            <td><span id="psychLex"></span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <p>&nbsp;</p>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="h99">
+                                    <h3 class="panel-title">
+                                        <a class="collapsed" role="button" aria-label="Prospection breakdown panel" data-toggle="collapse" data-parent="#outputSection" href="#res99" aria-expanded="false" aria-controls="res99">Dark Triad Breakdown  <span class="caret"></span></a>
+                                    </h3>
+                                </div>
+                                <div id="res99" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h99">
+                                    <div class="panel-body container">
+                                        <p><strong>General: </strong><span id="triad"></span></p>
+                                        <p><strong>Machiavellianism: </strong><span id="machi"></span></p>
+                                        <p><strong>Narcissism: </strong><span id="narci"></span></p>
+                                        <p><strong>Psychopathy: </strong><span id="psycho"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
                         <div id="ageRes" class="hidden">
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="h11">
@@ -686,6 +762,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr>
                         </div>
                     </div>
                 </div>
@@ -693,7 +770,6 @@
         </main>
 
         <footer class="container">
-            <hr>
             <p><strong>References</strong></p>
             <p><cite><a href="https://www.ncbi.nlm.nih.gov/pubmed/26776214" target="_blank" rel="noopener">Schwartz, H.A., Sap, M., Kern, M.L., Eichstaedt, J.C., Kapelner, A., Agrawal, M., Blanco, E., Dziurzynski, L., Park, G., Stillwell, D. & Kosinski, M. (2016). Predicting individual well-being through the language of social media. In Biocomputing 2016: Proceedings of the Pacific Symposium (pp. 516-527)</a></cite>.</p>
             <p><cite><a href="https://www.seas.upenn.edu/~hansens/tempor-naacl15-cr.pdf" target="_blank" rel="noopener">Schwartz, H. A., Park, G., Sap, M., Weingarten, E., Eichstaedt, J., Kern, M., Stillwell, D., Kosinski, M., Berger, J., Seligman, M., & Ungar, L. (2015). Extracting Human Temporal Orientation from Facebook Language. NAACL-2015: Conference of the North American Chapter of the Association for Computational Linguistics</a></cite>.</p>
@@ -702,7 +778,7 @@
             <p><strong>Acknowledgements</strong></p>
             <p>The Positive Psychology Text Analyser (PPTA), created by <a href="http://www.phugh.es" target="_blank" rel="noopener">P. Hughes</a>. The lexica were created by Penn's <a href="http://www.wwbp.org" target="_blank" rel="noopener">World Well-being Project</a> and are licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. PPTA is released under the same licence. The PPTA and its creator are not associated with, and do not represent, Penn, WWBP, or any of the authors listed above.</p>
             <p><strong>Source</strong></p>
-            <p>This web-app is free and open-source. The source code is available <a href="https://github.com/phugh/permatoken" target="_blank" rel="noopener">here</a>. Pull requests welcome and encouraged!</p>
+            <p>This web-app is free and open-source. The source code is available on <a href="https://github.com/phugh/permatoken" target="_blank" rel="noopener">Github</a>. Pull requests welcome and encouraged!</p>
             <p><strong>How to reference this site (APA style)</strong></p>
             <p>Hughes, P. T. (2017). Positive Psychology Text Analyser. [Computer Software] Retrieved from https://www.phugh.es/tech/permatoken.</p>
             <p><Strong>More!</Strong></p>
@@ -711,9 +787,9 @@
 
         </div> <!-- end of blur -->
 
-        <script async>
-            'use strict';
+        <script>
             function loadCss (filename) {
+                'use strict';
                 var l = document.createElement('link')
                 l.rel = 'stylesheet'
                 l.href = filename
@@ -724,12 +800,14 @@
             loadCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css")
             loadCss("css/style.min.css")
         </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
         <script async src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script defer>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/he/1.1.1/he.min.js"></script>
+        <script>
         // CDN fallback
         if (!window.jQuery || !typeof $().emulateTransitionEnd == 'function') {
-            document.write('<script src="js/jquery-3.2.1.min.js"><\/script>')
+            document.write('<script src="js/jquery-3.3.1.slim.min.js"><\/script>')
             document.write('<script src="js/bootstrap.min.js"><\/script>');
             loadCss("css/bootstrap.min.css")
             loadCss("css/bootstrap-theme.min.css")
@@ -737,10 +815,8 @@
             document.write('<script src="js/chart.min.js"><\/script>');
         }
         </script>
-        <script defer src="js/main.min.js"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/he/1.1.1/he.min.js"></script>
-        <script defer>
+        <script defer src="js/main.js"></script>
+        <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js', {scope: "./"}).then(function (registration, err) {
                     if (err) console.log('ServiceWorker registration failed: ', err)
